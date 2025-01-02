@@ -39,11 +39,12 @@ const Login: React.FC = () => {
                 localStorage.setItem("userId", response.data.user_id);
                 localStorage.setItem("token", response.data.access_token);
                 // Store response.data.user_id
-                Swal.fire({
-                    title: 'Login Successful!',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                }).then(() => navigate("/"));
+                // Swal.fire({
+                //     title: 'Login Successful!',
+                //     icon: 'success',
+                //     confirmButtonText: 'OK',
+                // }).then(() => navigate("/"));
+                navigate("/");
             }
 
             else {
