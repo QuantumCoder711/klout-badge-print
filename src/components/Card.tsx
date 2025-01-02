@@ -4,6 +4,16 @@ import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+
+
 type CardProps = {
     title: string,
     date: string,
@@ -25,9 +35,10 @@ const Card: React.FC<CardProps> = (props) => {
 
     const token = localStorage.getItem("token");
 
-    const apiBaseUrl: string = import.meta.env.VITE_API_BASE_URL;
+    const apiBaseUrl: string = import.meta.env.VITE_BASE_URL;
 
     const [isLive, setIsLive] = useState<boolean>(false);
+    const [printer, setPrinter] = useState<number | null>(null);
 
     const eventStartTime: string = `${props.start_time}:${props.start_minute_time} ${props.start_time_type}`;
     const eventEndTime: string = `${props.end_time}:${props.end_minute_time} ${props.end_time_type}`;
@@ -60,6 +71,21 @@ const Card: React.FC<CardProps> = (props) => {
         }
     }, [eventStartTime, eventEndTime, props.date]);
 
+    // to={`/print-badge/${props.eventuuid}`}
+    const handleSelectTab = () => {
+        console.log(apiBaseUrl)
+        axios.post(`${apiBaseUrl}/api/display/${props.eventuuid}`, {}, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            }
+        }).then(res => (console.log(res.data.data), setPrinter(res.data.data.printer_count)));
+        // Swal.fire({
+        //     title: 'Please select a tab',
+        //     icon: 'info',
+        // });
+    }
+
     return (
         <div className="w-80 shadow-xl rounded-lg">
             <figure>
@@ -80,7 +106,37 @@ const Card: React.FC<CardProps> = (props) => {
             </div>
             <div className='w-full flex gap-3 p-3'>
                 {/* <button className='w-full px-4 py-2 rounded-lg text-white bg-pink-500'>View Event</button> */}
-                <Link to={`/print-badge/${props.eventuuid}`} className='inline-block w-full text-center px-4 py-2 rounded-lg text-white bg-teal-500'>Print Badge</Link>
+
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <button onClick={handleSelectTab} className='inline-block w-full text-center px-4 py-2 rounded-lg text-white bg-teal-500'>Print Badge</button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className='text-xl text-center'>Please select a tab</DialogTitle>
+                            <DialogDescription>
+
+                            </DialogDescription>
+                            <div className='grid grid-cols-5 place-content-center gap-5'>
+                                {
+                                    Array(printer).fill(0).map((_, index:number) => (
+                                        <Link to={`/print-badge/${props.eventuuid}/${index+1}`} key={index + 1} className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>{index+1}</Link>
+                                    ))
+                                }
+                                {/* <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
+                                <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div> */}
+                            </div>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+
             </div>
         </div>
     )

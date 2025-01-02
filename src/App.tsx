@@ -20,7 +20,7 @@ const App: React.FC = () => {
       <Route path='/login' element={<Login />} />
       <Route element={<RootLayout />}>
         <Route path='/' element={<Dashboard />} />
-        <Route path='/print-badge/:eventUuid' element={<BadgePrint />} />
+        <Route path='/print-badge/:eventUuid/:tabId' element={<BadgePrint />} />
       </Route>
     </Routes>
   )
