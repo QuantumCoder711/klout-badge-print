@@ -317,7 +317,9 @@ const BadgePrint: React.FC = () => {
     const { eventUuid, tabId } = useParams<{ eventUuid: string, tabId: string }>();
     const userId = localStorage.getItem("userId");
 
-    const link: string = `https://kloutclub.page.link/?link=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&apn=com.klout.app&afl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&ibi=com.klout.app&ifl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&_icp=1`;
+    // const link: string = `https://kloutclub.page.link/?link=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&apn=com.klout.app&afl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&ibi=com.klout.app&ifl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&_icp=1`;
+
+    const link: string = `https://kloutclub.page.link/?link=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&apn=com.klout.app&afl=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&ibi=com.klout.app&ifl=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&_icp=1`;
 
     const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
     const baseUrl: string = import.meta.env.VITE_BASE_URL;
@@ -388,7 +390,7 @@ const BadgePrint: React.FC = () => {
         ) : (
             <div className="h-full mt-10 w-full grid place-content-center">
                 <p className="text-3xl font-bold text-zinc-600 text-center">
-                    Scan the QR Code. Tab ID: {tabId}
+                    Scan the QR Code.
                 </p>
                 <QRCode id='qr-code' value={link} fgColor='#3f3f46' className='w-96 h-96' />
             </div>
