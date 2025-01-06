@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MdDateRange, MdMyLocation } from "react-icons/md";
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import axios from 'axios';
 
 import {
@@ -87,7 +86,7 @@ const Card: React.FC<CardProps> = (props) => {
     }
 
     return (
-        <div className="w-80 shadow-xl rounded-lg">
+        <div className="w-80 shadow-xl rounded-lg relative">
             <figure>
                 <img
                     src={props.imageUrl}
@@ -96,7 +95,7 @@ const Card: React.FC<CardProps> = (props) => {
                     className='h-60 w-full object-cover rounded-t-lg'
                 />
             </figure>
-            <div className='p-3'>
+            <div className='p-3 relative'>
                 {isLive && <span className='text-xs font-bold  absolute right-1 top-1 px-1 rounded border text-red-600 border-red-600 flex items-center gap-1'>Live <span className='w-2 h-2 rounded-full bg-red-600 liveBlink' /></span>}
                 <h2 className="text-2xl font-bold">{props.title}</h2>
                 <div className='mt-3 flex flex-col gap-3'>
@@ -119,8 +118,8 @@ const Card: React.FC<CardProps> = (props) => {
                             </DialogDescription>
                             <div className='grid grid-cols-5 place-content-center gap-5'>
                                 {
-                                    Array(printer).fill(0).map((_, index:number) => (
-                                        <Link to={`/print-badge/${props.eventuuid}/${index+1}`} key={index + 1} className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>{index+1}</Link>
+                                    Array(printer).fill(0).map((_, index: number) => (
+                                        <Link to={`/print-badge/${props.eventuuid}/${index + 1}`} key={index + 1} className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>{index + 1}</Link>
                                     ))
                                 }
                                 {/* <div className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'>1</div>
@@ -136,6 +135,10 @@ const Card: React.FC<CardProps> = (props) => {
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>
+
+                {/* {
+                    !printer && <Link to={`/print-badge/${props.eventuuid}/1`} className='p-5 grid place-content-center cursor-pointer bg-teal-500 font-bold text-2xl text-white rounded'></Link>
+                } */}
 
             </div>
         </div>

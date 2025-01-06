@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className='p-5'>
       <h1 className='text-2xl font-semibold text-zinc-600'>All Upcoming Events</h1>
 
       <div className='mt-5 w-full flex flex-wrap gap-5'>
