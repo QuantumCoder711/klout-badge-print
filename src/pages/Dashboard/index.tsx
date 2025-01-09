@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
       }).slice(0, 4);
 
       console.log(upcomingEvents);
-      
+
       setEvents(upcomingEvents);
     })
   }, []);
@@ -63,6 +63,7 @@ const Dashboard: React.FC = () => {
             end_time={event.end_time}
             end_time_type={event.end_time_type}
             qr={event.qr_code}
+            printer_count={event.printer_count}
             imageAlt={event.title}
             date={event.event_start_date}
             venue={event.event_venue_name}
@@ -70,7 +71,7 @@ const Dashboard: React.FC = () => {
           />
         ))}
       </div>
-        {(!events || events.length === 0) && <p>No upcoming events.</p>}
+      {(!events || events.length === 0) && <p>No upcoming events.</p>}
     </div>
   )
 }

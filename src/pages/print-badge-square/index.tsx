@@ -14,14 +14,14 @@ interface Badge {
     tabId: string;
 }
 
-const BadgePrint: React.FC = () => {
+const PrintBadgeSquare: React.FC = () => {
     const { eventUuid, tabId, print } = useParams<{ eventUuid: string, tabId: string, print: string }>();
     console.log(print);
     const userId = localStorage.getItem("userId");
 
-    const width = "105mm";
-    const height = "148.5";
-    const type = "A6";
+    const width = "80mm";
+    const height = "100mm";
+    const type = "A2";
 
     // const link: string = `https://kloutclub.page.link/?link=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&apn=com.klout.app&afl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&ibi=com.klout.app&ifl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&_icp=1`;
 
@@ -37,18 +37,13 @@ const BadgePrint: React.FC = () => {
             return;
         }
 
-        const joinRoom = () => {
-            socket.emit('joinRoom', { userId, eventUuid, tabId });
-        };
-
         // Connect to the server
         socket.on("connect", () => {
             console.log("Connected to the server", socket.id);
-            joinRoom();
         });
 
         // Join the room using userId, eventUuid, and tabId
-        // socket.emit('joinRoom', { userId, eventUuid, tabId });
+        socket.emit('joinRoom', { userId, eventUuid, tabId });
 
         // Listen for the badgeGenerated event
         socket.on('badgeGenerated', (data: Badge) => {
@@ -63,11 +58,6 @@ const BadgePrint: React.FC = () => {
             }
         });
 
-        socket.on("reconnect", () => {
-            console.log("Reconnected to the server");
-            joinRoom(); // Rejoin the room after reconnecting
-        });
-
         return () => {
             // Cleanup socket listeners on component unmount
             socket.off('badgeGenerated');
@@ -75,26 +65,27 @@ const BadgePrint: React.FC = () => {
         };
     }, [userId, eventUuid, tabId]);
 
-
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
 
-            {badgeData && <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
+            {badgeData && <div className="grid place-content-center w-fit p-3 scale-75 max-w-96 -mt-0">
                 <div ref={badgeRef} className='w-fit'>
-                    <div className="mx-auto overflow-hidden rounded bg-white flex flex-col min-w-fit">
-                        <img
-                            src={`${baseUrl}/${badgeData?.imageUrl}`}
-                            className="w-full h-auto rounded-t mx-auto object-cover"
-                            alt="Badge"
-                        />
-                        <h3 className="font-bold text-4xl pt-10 text-neutral-600 text-center">
-                            {badgeData?.attendeeName || "Attendee Name"}
+                    <div className="max-w-96 w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
+                        <div className='min-h-40 min-w-60 !bg-cover rounded-t-md !bg-center' style={{ background: `url(${baseUrl}/${badgeData.imageUrl})` }}>
+                            {/* <img
+                                src={`${baseUrl}/${badgeData.imageUrl}`}
+                                className="w-full rounded-t mx-auto object-cover"
+                                alt="Badge"
+                            /> */}
+                        </div>
+                        <h3 className="font-bold text-4xl pt-5 text-neutral-600 text-center">
+                            {badgeData.attendeeName || "Attendee Name"}
                         </h3>
-                        <span className="font-bold text-3xl pb-10 text-neutral-600 text-center">
-                            {badgeData?.attendeeCompany || "Company Name"}
+                        <span className="font-bold text-2xl pb-5 text-neutral-600 text-center">
+                            {badgeData.attendeeCompany || "Company Name"}
                         </span>
-                        <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
-                            {badgeData?.attendeeRole || "Delegate"}
+                        <div className="pt-0 text-3xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
+                            {badgeData.attendeeRole || "Delegate"}
                         </div>
                     </div>
                 </div>
@@ -104,7 +95,6 @@ const BadgePrint: React.FC = () => {
                 >
                     Print
                 </button>
-
             </div>}
 
             <div className="h-full px-5 mt-10 w-fit mx-auto">
@@ -117,4 +107,4 @@ const BadgePrint: React.FC = () => {
     );
 };
 
-export default BadgePrint;
+export default PrintBadgeSquare;
