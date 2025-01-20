@@ -69,23 +69,24 @@ const PrintName: React.FC = () => {
         }
 
         const joinRoom = () => {
+            console.log("Joining room with:", { userId, eventUuid, tabId });
             socket.emit('joinRoom', { userId, eventUuid, tabId });
         };
 
-        // Connect to the server
+        // If already connected, log socket.id and join the room
+        if (socket.connected) {
+            console.log("Already connected to the server", socket.id);
+            joinRoom();
+        }
+
+        // Set up listeners
         socket.on("connect", () => {
             console.log("Connected to the server", socket.id);
             joinRoom();
         });
 
-        // Join the room using userId, eventUuid, and tabId
-        // socket.emit('joinRoom', { userId, eventUuid, tabId });
-
-        // Listen for the badgeGenerated event
-        socket.on('badgeGenerated', (data: Badge) => {
+        socket.on("badgeGenerated", (data: Badge) => {
             console.log("Received badge data:", data);
-
-            // Update the UI only if the badge matches the eventUuid, userId, and tabId
             if (data.eventOwnerId === userId && data.eventUuid === eventUuid && data.tabId === tabId) {
                 if (data.attendeeRole === "0") {
                     data.attendeeRole = "Delegate";
@@ -96,15 +97,17 @@ const PrintName: React.FC = () => {
 
         socket.on("reconnect", () => {
             console.log("Reconnected to the server");
-            joinRoom(); // Rejoin the room after reconnecting
+            joinRoom();
         });
 
         return () => {
-            // Cleanup socket listeners on component unmount
-            socket.off('badgeGenerated');
-            socket.off('connect');
+            console.log("Cleaning up socket listeners...");
+            socket.off("badgeGenerated");
+            socket.off("connect");
+            socket.off("reconnect");
         };
     }, [userId, eventUuid, tabId]);
+
 
 
     return (
