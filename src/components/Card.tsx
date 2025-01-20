@@ -92,7 +92,7 @@ const Card: React.FC<CardProps> = (props) => {
     }
 
     return (
-        <div className="w-80 shadow-xl rounded-lg relative">
+        <div className="max-w-80 shadow-xl rounded-lg relative">
             <figure>
                 <img
                     src={props.imageUrl}

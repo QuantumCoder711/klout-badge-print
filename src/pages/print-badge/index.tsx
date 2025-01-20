@@ -23,11 +23,16 @@ const BadgePrint: React.FC = () => {
     const height = "148.5";
     const type = "A6";
 
-    // const link: string = `https://kloutclub.page.link/?link=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&apn=com.klout.app&afl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&ibi=com.klout.app&ifl=https://www.klout.club/event/check-in?eventuuid%3D${eventUuid}&tabId%3D${tabId}&_icp=1`;
-
-    const link: string = `https://kloutclub.page.link/?link=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&apn=com.klout.app&afl=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&ibi=com.klout.app&ifl=${encodeURIComponent(`https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`)}&_icp=1`;
+    const link: string = `https://kloutclub.page.link/?link=${encodeURIComponent(
+        `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
+    )}&apn=com.klout.app&afl=${encodeURIComponent(
+        `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
+    )}&ibi=com.klout.app&ifl=${encodeURIComponent(
+        `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
+    )}&_icp=1`;
 
     const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
+    const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
     const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
 
@@ -42,13 +47,11 @@ const BadgePrint: React.FC = () => {
             socket.emit('joinRoom', { userId, eventUuid, tabId });
         };
 
-        // If already connected, log socket.id and join the room
         if (socket.connected) {
             console.log("Already connected to the server", socket.id);
             joinRoom();
         }
 
-        // Set up listeners
         socket.on("connect", () => {
             console.log("Connected to the server", socket.id);
             joinRoom();
@@ -61,6 +64,7 @@ const BadgePrint: React.FC = () => {
                     data.attendeeRole = "Delegate";
                 }
                 setBadgeData(data);
+                setShowQrCode(false); // Hide QR code when badge is displayed
             }
         });
 
@@ -70,51 +74,60 @@ const BadgePrint: React.FC = () => {
         });
 
         return () => {
-            console.log("Cleaning up socket listeners...");
             socket.off("badgeGenerated");
             socket.off("connect");
             socket.off("reconnect");
         };
     }, [userId, eventUuid, tabId]);
 
+    const handlePrint = () => {
+        // Call the printBadge function and then show QR code after a delay
+        printBadge(badgeRef.current, width, height, type);
+        setTimeout(() => {
+            setShowQrCode(true); // Show QR code after printing or canceling the print dialog
+            setBadgeData(undefined); // Clear badge data
+        }, 1000); // Delay ensures the print dialog finishes first
+    };
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
-
-            {badgeData && <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                <div ref={badgeRef} className='w-fit'>
-                    <div className="mx-auto overflow-hidden rounded bg-white flex flex-col min-w-fit">
-                        <img
-                            src={`${baseUrl}/${badgeData?.imageUrl}`}
-                            className="w-full h-auto rounded-t mx-auto object-cover"
-                            alt="Badge"
-                        />
-                        <h3 className="font-bold text-4xl pt-10 text-neutral-600 text-center">
-                            {badgeData?.attendeeName || "Attendee Name"}
-                        </h3>
-                        <span className="font-bold text-3xl pb-10 text-neutral-600 text-center">
-                            {badgeData?.attendeeCompany || "Company Name"}
-                        </span>
-                        <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
-                            {badgeData?.attendeeRole || "Delegate"}
+            {badgeData && (
+                <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
+                    <div ref={badgeRef} className='w-fit'>
+                        <div className="mx-auto overflow-hidden rounded bg-white flex flex-col min-w-fit">
+                            <img
+                                src={`${baseUrl}/${badgeData?.imageUrl}`}
+                                className="w-full h-auto rounded-t mx-auto object-cover"
+                                alt="Badge"
+                            />
+                            <h3 className="font-bold text-4xl pt-10 text-neutral-600 text-center">
+                                {badgeData?.attendeeName || "Attendee Name"}
+                            </h3>
+                            <span className="font-bold text-3xl pb-10 text-neutral-600 text-center">
+                                {badgeData?.attendeeCompany || "Company Name"}
+                            </span>
+                            <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
+                                {badgeData?.attendeeRole || "Delegate"}
+                            </div>
                         </div>
                     </div>
+                    <button
+                        onClick={handlePrint}
+                        className="px-5 py-2 mt-3 rounded bg-gradient-to-br from-sky-500 to-teal-500 font-semibold text-white"
+                    >
+                        Print
+                    </button>
                 </div>
-                <button
-                    onClick={() => printBadge(badgeRef.current, width, height, type)}
-                    className="px-5 py-2 mt-3 rounded bg-gradient-to-br from-sky-500 to-teal-500 font-semibold text-white"
-                >
-                    Print
-                </button>
+            )}
 
-            </div>}
-
-            <div className="h-full px-5 mt-10 w-fit mx-auto">
-                <p className="text-3xl font-bold text-zinc-600 mb-5 text-center">
-                    Scan the QR Code.
-                </p>
-                <QRCode id='qr-code' value={link} fgColor='#3f3f46' className='max-w-96 max-h-96 mx-auto' />
-            </div>
+            {showQrCode && (
+                <div className="h-full px-5 mt-10 w-fit mx-auto">
+                    <p className="text-3xl font-bold text-zinc-600 mb-5 text-center">
+                        Scan the QR Code.
+                    </p>
+                    <QRCode id='qr-code' value={link} fgColor='#3f3f46' className='max-w-96 max-h-96 mx-auto' />
+                </div>
+            )}
         </div>
     );
 };
