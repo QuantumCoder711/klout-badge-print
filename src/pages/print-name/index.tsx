@@ -110,13 +110,14 @@ const PrintName: React.FC = () => {
     return (
         <div className='flex gap-40 mx-auto'>
 
-            {badgeData && <div className="grid place-content-center min-w-fit p-3 h-screen">
-                <div ref={badgeRef} className='w-full grid place-content-center'>
-                    <div className="mx-auto overflow-hidden rounded bg-white flex flex-col justify-center min-w-full">
-                        <h3 className="font-bold pt-10 text-neutral-600 text-center w-full text-wrap overflow-hidden text-7xl">
+            {badgeData && <div className=" p-3">
+                <div ref={badgeRef} className='mx-auto'>
+                    <div className="mx-auto flex items-center flex-col justify-center min-w-full">
+                        <h3 className="font-bold text-neutral-600 text-center w-full text-wrap overflow-hidden text-7xl">
                             {badgeData.attendeeName || "Attendee Name"}
                         </h3>
-                        <h5 className='font-semibold pt-4 text-neutral-600 text-center w-full text-wrap overflow-hidden text-4xl'>{badgeData.attendeeCompany}</h5>
+                        <h5 className='font-semibold pt-4 pb-10 text-neutral-600 text-center w-full text-wrap overflow-hidden text-4xl'>{badgeData.attendeeCompany}</h5>
+                        <hr />
                     </div>
 
                 </div>

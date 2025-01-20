@@ -63,7 +63,7 @@ const PrintBadgeSquare: React.FC = () => {
             socket.off('badgeGenerated');
             socket.off('connect');
         };
-    }, [userId, eventUuid, tabId]);
+    }, [userId, eventUuid, tabId, socket.id]);
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>

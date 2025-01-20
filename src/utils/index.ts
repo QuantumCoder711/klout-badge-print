@@ -403,9 +403,258 @@ export const printBadge = (container: HTMLElement | null, width: string, height:
 
     // Use both onafterprint and a fallback timeout to ensure cleanup
     window.onafterprint = cleanup;
-    setTimeout(cleanup, 1000); // Fallback cleanup in case onafterprint doesn't fire
+    setTimeout(cleanup, 200); // Fallback cleanup in case onafterprint doesn't fire
 };
 
+// Backup
+// export const printName = (container: HTMLElement | null) => {
+//     if (!container) {
+//         console.error("No badge container found for printing");
+//         return;
+//     }
+
+//     // Create a temporary print container
+//     const printContainer = document.createElement("div");
+//     printContainer.style.position = "absolute";
+//     printContainer.style.top = "0";
+//     printContainer.style.left = "0";
+//     printContainer.style.width = "100%";
+//     printContainer.style.height = "100%";
+//     printContainer.style.zIndex = "9999";
+//     printContainer.style.backgroundColor = "white";
+//     printContainer.style.display = "flex";
+//     printContainer.style.justifyContent = "center";
+//     printContainer.style.alignItems = "center";
+//     printContainer.style.overflow = "hidden";
+//     printContainer.innerHTML = `
+//         <div style="width: 210mm; height: 297mm; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+//             ${container.outerHTML}
+//         </div>
+//     `;
+
+//     // Append the print container to the body
+//     document.body.appendChild(printContainer);
+
+//     // Copy styles for printing
+//     const styleSheet = document.createElement("style");
+//     styleSheet.textContent = `
+//         @page {
+//             size: A4; /* Set A4 page size */
+//             margin: 0; /* Remove default margins */
+//         }
+//         body {
+//             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+//         }
+//     `;
+//     document.head.appendChild(styleSheet);
+
+//     // Trigger print
+//     window.print();
+
+//     // Cleanup after printing
+//     const cleanup = () => {
+//         if (document.body.contains(printContainer)) {
+//             document.body.removeChild(printContainer);
+//         }
+//         if (document.head.contains(styleSheet)) {
+//             document.head.removeChild(styleSheet);
+//         }
+//         window.onafterprint = null; // Clear the event listener
+//     };
+
+//     // Use both onafterprint and a timeout as a fallback
+//     window.onafterprint = cleanup;
+//     setTimeout(cleanup, 200); // Fallback in case onafterprint doesn't fire
+// };
+
+
+// export const printName = (container: HTMLElement | null) => {
+//     if (!container) {
+//         console.error("No badge container found for printing");
+//         return;
+//     }
+
+//     // Store the current content of the body
+//     const originalContent = document.body.innerHTML;
+
+//     // Create a wrapper for the container's content
+//     const printWrapper = document.createElement("div");
+//     printWrapper.innerHTML = container.outerHTML;
+//     printWrapper.style.margin = "0 auto"; // Center the content
+//     printWrapper.style.width = "fit-content"; // Adjust width to the content
+//     printWrapper.style.height = "fit-content"; // Adjust height to the content
+
+//     // Replace the body content with the container's content for printing
+//     document.body.innerHTML = printWrapper.outerHTML;
+
+//     // Add a print-specific stylesheet
+//     const styleSheet = document.createElement("style");
+//     styleSheet.textContent = `
+//         @page {
+//             size: auto; /* Automatically adjust to content size */
+//             margin: 0; /* Remove default margins */
+//         }
+//         body {
+//             display: flex;
+//             justify-content: center;
+//             align-items: center;
+//             margin: 0; /* Remove default margins for body */
+//             padding: 0; /* Remove padding */
+//             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+//         }
+//         div {
+//             box-shadow: none !important; /* Remove any shadows */
+//         }
+//     `;
+//     document.head.appendChild(styleSheet);
+
+//     // Trigger the print dialog
+//     window.print();
+
+//     // Restore the original content after printing
+//     document.body.innerHTML = originalContent;
+
+//     // Remove the appended stylesheet to avoid affecting the rest of the app
+//     if (styleSheet.parentNode) {
+//         styleSheet.parentNode.removeChild(styleSheet);
+//     }
+// };
+
+
+// export const printName = (container: HTMLElement | null) => {
+//     if (!container) {
+//         console.error("No badge container found for printing");
+//         return;
+//     }
+
+//     // Store the current content of the body
+//     const originalContent = document.body.innerHTML;
+
+//     // Create a wrapper for the container's content
+//     const printWrapper = document.createElement("div");
+//     printWrapper.innerHTML = container.outerHTML;
+//     printWrapper.style.margin = "0 auto"; // Center the content
+//     printWrapper.style.width = "fit-content"; // Adjust width to the content
+//     printWrapper.style.height = "fit-content"; // Adjust height to the content
+
+//     // Replace the body content with the container's content for printing
+//     document.body.innerHTML = printWrapper.outerHTML;
+
+//     document.querySelector("body")!.style.maxHeight = "fit-content";
+
+//     // Add a print-specific stylesheet
+//     const styleSheet = document.createElement("style");
+//     styleSheet.textContent = `
+//         @page {
+//             max-height: fit-content !important;
+//             margin: 0; /* Remove default margins */
+//         }
+//         body {
+//             display: flex;
+//             justify-content: center;
+//             align-items: center;
+//             margin: 0; /* Remove default margins for body */
+//             padding: 0; /* Remove padding */
+//             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+//         }
+//         div {
+//             box-shadow: none !important; /* Remove any shadows */
+//             position: relative;
+//         }
+//         /* Add a header for "Page 1" if necessary */
+//         div::before {
+//             content: "Page 1";
+//             position: absolute;
+//             top: -20px; /* Adjust position if needed */
+//             left: 0;
+//             width: 100%;
+//             text-align: center;
+//             font-size: 18px;
+//             font-weight: bold;
+//             margin-bottom: 10px;
+//         }
+//     `;
+//     document.head.appendChild(styleSheet);
+
+//     // Trigger the print dialog
+//     window.print();
+
+//     // Restore the original content after printing
+//     document.body.innerHTML = originalContent;
+
+//     // Remove the appended stylesheet to avoid affecting the rest of the app
+//     if (styleSheet.parentNode) {
+//         styleSheet.parentNode.removeChild(styleSheet);
+//     }
+// };
+
+// export const printName = (container: HTMLElement | null) => {
+//     if (!container) {
+//         console.error("No badge container found for printing");
+//         return;
+//     }
+
+//     // Store the current content of the body
+//     const originalContent = document.body.innerHTML;
+
+//     // Create a wrapper for the container's content
+//     const printWrapper = document.createElement("div");
+//     printWrapper.textContent = container.textContent; // Only take the text content
+//     printWrapper.style.display = "inline-block"; // Prevent full-width expansion
+//     printWrapper.style.margin = "0"; // No margins
+//     printWrapper.style.padding = "0"; // No padding
+//     printWrapper.style.fontSize = "12px"; // Adjust font size, if necessary
+//     printWrapper.style.textAlign = "center"; // Center the text
+//     printWrapper.style.lineHeight = "30mm"; // Center vertically if necessary
+//     printWrapper.style.height = "30mm"; // Ensure it fits the specified height
+//     printWrapper.style.width = "50mm"; // Ensure it fits the specified width
+//     printWrapper.style.overflow = "hidden"; // Prevent content from overflowing
+
+//     // Replace the body content with the container's content for printing
+//     document.body.innerHTML = "";
+//     document.body.appendChild(printWrapper);
+
+//     // Add a print-specific stylesheet
+//     const styleSheet = document.createElement("style");
+//     styleSheet.textContent = `
+//         @media print {
+//             @page {
+//                 size: 50mm 30mm potrait; /* Set the page size */
+//                 margin: 0; /* Remove default margins */
+//             }
+//         }
+
+//         body {
+//             margin: 0; /* Remove body margin */
+//             padding: 0; /* Remove body padding */
+//             display: flex;
+//             justify-content: center;
+//             align-items: center;
+//             height: 100%; /* Ensure full height is used */
+//             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+//         }
+//         div {
+//             margin: 0; /* No margin */
+//             padding: 0; /* No padding */
+//             box-shadow: none; /* Remove any shadows */
+//             width: 50mm; /* Set content width */
+//             height: 30mm; /* Set content height */
+//             overflow: hidden; /* Prevent overflow */
+//         }
+//     `;
+//     document.head.appendChild(styleSheet);
+
+//     // Trigger the print dialog
+//     window.print();
+
+//     // Restore the original content after printing
+//     document.body.innerHTML = originalContent;
+
+//     // Remove the appended stylesheet to avoid affecting the rest of the app
+//     if (styleSheet.parentNode) {
+//         styleSheet.parentNode.removeChild(styleSheet);
+//     }
+// };
 
 export const printName = (container: HTMLElement | null) => {
     if (!container) {
@@ -421,13 +670,11 @@ export const printName = (container: HTMLElement | null) => {
     printContainer.style.width = "100%";
     printContainer.style.height = "100%";
     printContainer.style.zIndex = "9999";
+    printContainer.style.margin = "auto";
     printContainer.style.backgroundColor = "white";
-    printContainer.style.display = "flex";
-    printContainer.style.justifyContent = "center";
-    printContainer.style.alignItems = "center";
     printContainer.style.overflow = "hidden";
     printContainer.innerHTML = `
-        <div style="width: 210mm; height: 297mm; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden;">
             ${container.outerHTML}
         </div>
     `;
@@ -435,11 +682,11 @@ export const printName = (container: HTMLElement | null) => {
     // Append the print container to the body
     document.body.appendChild(printContainer);
 
-    // Copy styles for printing
+    // Add styles for printing
     const styleSheet = document.createElement("style");
     styleSheet.textContent = `
         @page {
-            size: A4; /* Set A4 page size */
+            size: A6 landscape; /* Set the page size */
             margin: 0; /* Remove default margins */
         }
         body {
@@ -448,10 +695,7 @@ export const printName = (container: HTMLElement | null) => {
     `;
     document.head.appendChild(styleSheet);
 
-    // Trigger print
-    window.print();
-
-    // Cleanup after printing
+    // Cleanup function to restore the original state
     const cleanup = () => {
         if (document.body.contains(printContainer)) {
             document.body.removeChild(printContainer);
@@ -462,10 +706,84 @@ export const printName = (container: HTMLElement | null) => {
         window.onafterprint = null; // Clear the event listener
     };
 
-    // Use both onafterprint and a timeout as a fallback
+    // Trigger print
+    window.print();
+
+    // Use both onafterprint and a fallback timeout to ensure cleanup
     window.onafterprint = cleanup;
-    setTimeout(cleanup, 1000); // Fallback in case onafterprint doesn't fire
+    setTimeout(cleanup, 200); // Fallback cleanup in case onafterprint doesn't fire
 };
+
+
+
+// export const printName = (container: HTMLElement | null) => {
+//     if (!container) {
+//         console.error("No badge container found for printing");
+//         return;
+//     }
+
+//     // Store the current content of the body
+//     const originalContent = document.body.innerHTML;
+
+//     // Create a wrapper for the container's content
+//     const printWrapper = document.createElement("div");
+//     printWrapper.innerHTML = container.outerHTML;
+//     printWrapper.style.display = "inline-block"; // Prevent full-width expansion
+//     printWrapper.style.margin = "0"; // No margins
+//     printWrapper.style.padding = "0"; // No padding
+//     printWrapper.style.boxShadow = "none"; // No shadows
+//     printWrapper.style.textAlign = "center"; // Center content, if required
+
+//     // Replace the body content with the container's content for printing
+//     document.body.innerHTML = "";
+//     document.body.appendChild(printWrapper);
+
+//     // Add a print-specific stylesheet
+//     const styleSheet = document.createElement("style");
+//     styleSheet.textContent = `
+//         @page {
+//             size: auto; /* Dynamically fit content */
+//             margin: 0; /* Remove default margins */
+//         }
+//         body {
+//             margin: 0; /* Remove body margin */
+//             padding: 0; /* Remove body padding */
+//             display: flex;
+//             justify-content: center;
+//             max-height: fit-content;
+//             align-items: center;
+//             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+//         }
+//         div {
+//             margin: 0 auto; /* Center content */
+//             max-width: fit-content; /* Dynamically adjust to content width */
+//             max-height: fit-content; /* Dynamically adjust to content height */
+//             box-shadow: none !important; /* Remove any shadows */
+//         }
+//         div::before {
+//             content: "Page 1";
+//             display: block;
+//             text-align: center;
+//             font-size: 12px;
+//             font-weight: bold;
+//             margin-bottom: 10px;
+//         }
+//     `;
+//     document.head.appendChild(styleSheet);
+
+//     // Trigger the print dialog
+//     window.print();
+
+//     // Restore the original content after printing
+//     document.body.innerHTML = originalContent;
+
+//     // Remove the appended stylesheet to avoid affecting the rest of the app
+//     if (styleSheet.parentNode) {
+//         styleSheet.parentNode.removeChild(styleSheet);
+//     }
+// };
+
+
 
 
 const useTypingAnimation = (textToType: string, typingSpeed: number, deletingSpeed: number, pauseDuration: number) => {
