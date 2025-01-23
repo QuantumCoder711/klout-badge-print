@@ -355,18 +355,18 @@ export const printBadge = (container: HTMLElement | null, width: string, height:
     // Create a temporary print container
     const printContainer = document.createElement("div");
     printContainer.style.position = "absolute";
+    printContainer.style.padding = "0px";
     printContainer.style.top = "0";
     printContainer.style.left = "0";
+    printContainer.style.right = "0";
     printContainer.style.width = "100%";
     printContainer.style.height = "100%";
     printContainer.style.zIndex = "9999";
+    printContainer.style.margin = "auto !important";
     printContainer.style.backgroundColor = "white";
-    printContainer.style.display = "flex";
-    printContainer.style.justifyContent = "center";
-    printContainer.style.alignItems = "center";
     printContainer.style.overflow = "hidden";
     printContainer.innerHTML = `
-        <div style="width: ${width}; height: ${height}; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+        <div style="width: ${width}; height: ${height}; padding: 0px; margin: auto !important; display: grid; justify-items: center; align-items: center; width: 100%;">
             ${container.outerHTML}
         </div>
     `;
@@ -674,7 +674,7 @@ export const printName = (container: HTMLElement | null) => {
     printContainer.style.backgroundColor = "white";
     printContainer.style.overflow = "hidden";
     printContainer.innerHTML = `
-        <div style="width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+        <div style="width: 100%; display: flex; padding-top: 10px; padding-bottom: 10px; border-bottom: 2px solid black; justify-content: center; align-items: center; overflow: hidden;">
             ${container.outerHTML}
         </div>
     `;

@@ -11,6 +11,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import Spinner from './Spinner';
 
 
 type CardProps = {
@@ -42,6 +43,7 @@ const Card: React.FC<CardProps> = (props) => {
     const [printerNumber, setPrinterNumber] = useState<number>(0);
     const [tab, setTab] = useState<boolean>(true);
     const [showShapes, setShowShapes] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     // const [screenType, setScreenType] = useState<"square" | "rectangle">("rectangle");
     // const [printType, setPrintType] = useState<"name" | "badge">("badge");
 
@@ -78,13 +80,14 @@ const Card: React.FC<CardProps> = (props) => {
 
     // to={`/print-badge/${props.eventuuid}`}
     const handleSelectTab = () => {
-        console.log(apiBaseUrl)
+        console.log(apiBaseUrl);
+        setLoading(true);
         axios.post(`${apiBaseUrl}/api/display/${props.eventuuid}`, {}, {
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             }
-        }).then(res => (console.log(res.data.data), setPrinter(res.data.data.printer_count)));
+        }).then(res => (console.log(res.data.data), setPrinter(res.data.data.printer_count))).finally(() => setLoading(false))
         // Swal.fire({
         //     title: 'Please select a tab',
         //     icon: 'info',
@@ -122,7 +125,7 @@ const Card: React.FC<CardProps> = (props) => {
                         <button onClick={handleSelectTab} className='inline-block w-full text-center px-4 py-2 rounded-lg text-white bg-teal-500'>Print Badge</button>
                     </DialogTrigger>
                     {(props.printer_count !== null && props.printer_count !== 0) ? <DialogContent>
-                        <DialogHeader>
+                        {!loading ? <DialogHeader>
                             <DialogTitle className='text-xl text-center'>Please select a tab</DialogTitle>
                             <DialogDescription>
 
@@ -147,7 +150,10 @@ const Card: React.FC<CardProps> = (props) => {
                                     <Link to={`/print-badge/rectangle/${props.eventuuid}/${printerNumber}`} className='w-40 rounded-md h-60 grid place-content-center bg-red-600 text-white'>10.5 x 14.85 cm</Link>
                                 </div>
                             }
-                        </DialogHeader>
+                        </DialogHeader> :
+                            <DialogHeader>
+                                <Spinner />
+                            </DialogHeader>}
                     </DialogContent> :
 
                         <DialogContent>

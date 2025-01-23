@@ -253,7 +253,7 @@ const PrintBadgeSquare: React.FC = () => {
         <div className='flex gap-40 items-center w-fit mx-auto'>
 
             {badgeData && <div className="grid place-content-center w-fit p-3 scale-75 max-w-96 -mt-0">
-                <div ref={badgeRef} className='w-fit'>
+                <div ref={badgeRef} className='w-fit !px-2 !pb-5 mx-auto border-b-2 border-red-600'>
                     <div className="max-w-96 w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
                         <div className='min-h-40 min-w-60 !bg-cover rounded-t-md !bg-center' style={{ background: `url(${baseUrl}/${badgeData.imageUrl})` }}>
                             {/* <img

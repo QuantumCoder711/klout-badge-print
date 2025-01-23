@@ -143,7 +143,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import socket from '../../socket';
-import { printBadge, printName } from '../../utils';
+import { printName } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 
@@ -172,7 +172,7 @@ const PrintName: React.FC = () => {
 
     const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
     const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
-    const baseUrl: string = import.meta.env.VITE_BASE_URL;
+    // const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -231,8 +231,8 @@ const PrintName: React.FC = () => {
     return (
         <div className='flex gap-40 mx-auto'>
 
-            {badgeData && <div className=" p-3">
-                <div ref={badgeRef} className='mx-auto'>
+            {badgeData && <div className="p-3">
+                <div ref={badgeRef} className='mx-auto p-2 pb-5'>
                     <div className="mx-auto flex items-center flex-col justify-center min-w-full">
                         <h3 className="font-bold text-neutral-600 text-center w-full text-wrap overflow-hidden text-7xl">
                             {badgeData.attendeeName || "Attendee Name"}
