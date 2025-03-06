@@ -234,10 +234,10 @@ const PrintName: React.FC = () => {
             {badgeData && <div className="p-3">
                 <div ref={badgeRef} className='mx-auto p-2 pb-5'>
                     <div className="mx-auto flex items-center flex-col justify-center min-w-full">
-                        <h3 className="font-bold text-neutral-600 text-center w-full text-wrap overflow-hidden text-7xl">
+                        <h3 className="font-bold text-center w-full !text-wrap text-4xl">
                             {badgeData.attendeeName || "Attendee Name"}
                         </h3>
-                        <h5 className='font-semibold pt-4 pb-10 text-neutral-600 text-center w-full text-wrap overflow-hidden text-4xl'>{badgeData.attendeeCompany}</h5>
+                        <h5 className='font-semibold pt-4 pb-10 text-center w-full text-wrap overflow-hidden text-2xl'>{badgeData.attendeeCompany}</h5>
                         <hr />
                     </div>
 

@@ -104,10 +104,10 @@ const BadgePrint: React.FC = () => {
                                 className="!h-60 rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            <h3 className="font-bold text-4xl pt-10 text-neutral-600 text-center">
+                            <h3 className="font-bold text-4xl pt-10 text-center">
                                 {badgeData?.attendeeName || "Attendee Name"}
                             </h3>
-                            <span className="font-bold text-3xl pb-10 text-neutral-600 text-center">
+                            <span className="font-bold text-3xl pb-10 text-center">
                                 {badgeData?.attendeeCompany || "Company Name"}
                             </span>
                             <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">

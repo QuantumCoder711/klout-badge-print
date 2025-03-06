@@ -262,10 +262,10 @@ const PrintBadgeSquare: React.FC = () => {
                                  alt="Badge"
                              /> */}
                         </div>
-                        <h3 className="font-bold text-4xl pt-5 text-neutral-600 text-center">
+                        <h3 className="font-bold text-4xl pt-5 text-center">
                             {badgeData.attendeeName || "Attendee Name"}
                         </h3>
-                        <span className="font-bold text-2xl pb-5 text-neutral-600 text-center">
+                        <span className="font-bold text-2xl pb-5 text-center">
                             {badgeData.attendeeCompany || "Company Name"}
                         </span>
                         <div className="pt-0 text-3xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
