@@ -38,7 +38,7 @@ const BadgePrint: React.FC = () => {
 
     const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
     const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
-    const baseUrl: string = import.meta.env.VITE_BASE_URL;
+    // const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -96,9 +96,9 @@ const BadgePrint: React.FC = () => {
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
-            {true && (
+            {badgeData && (
                 <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                    <div ref={badgeRef} className='w-full mx-auto border-b-2 border-red-600'>
+                    <div ref={badgeRef} className='w-full mx-auto'>
                         <div className="w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
@@ -106,18 +106,18 @@ const BadgePrint: React.FC = () => {
                                 className="!h-[150px] w-[300px] rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            <div className='mx-2 pb-5'>
-                                <h3 className="font-bold text-5xl pt-5">
-                                    {badgeData?.attendeeName || "Dev"}
+                            <div className='mx-2 pb-5 !capitalize'>
+                                <h3 className="font-bold text-7xl pt-5 mb-2">
+                                    {badgeData?.attendeeName || "N/A"}
                                 </h3>
-                                <h3 className="font-medium text-3xl pt-2">
-                                    {badgeData?.attendeeName || "Yadav"}
+                                <h3 className="font-medium text-4xl pt-3 mb-2">
+                                    {badgeData?.attendeeName || "N/A"}
                                 </h3>
-                                <span className="text-xl capitalize pt-3 pb-5">
-                                    {badgeData?.attendeeCompany || "Google"}
+                                <span className="text-2xl capitalize pt-3 pb-5">
+                                    {badgeData?.attendeeCompany || "N/A"}
                                 </span>
                             </div>
-                            <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
+                            <div className="pt-4 pb-3 mt-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
@@ -131,7 +131,7 @@ const BadgePrint: React.FC = () => {
                 </div>
             )}
 
-            {!showQrCode && (
+            {showQrCode && (
                 <div className="h-full px-5 mt-10 w-fit mx-auto">
                     <p className="text-3xl font-bold text-zinc-600 mb-5 text-center">
                         Scan the QR Code.
