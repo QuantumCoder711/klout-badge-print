@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import RootLayout from './pages/layout';
 import PrintName from './pages/print-name';
 import PrintBadgeSquare from './pages/print-badge-square';
+import PrintBadgeCombined from './pages/print-badge-combined';
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const App: React.FC = () => {
         <Route path='/' element={<Dashboard />} />
         <Route path='/print-badge/rectangle/:eventUuid/:tabId' element={<BadgePrint />} />
         <Route path='/print-badge/square/:eventUuid/:tabId' element={<PrintBadgeSquare />} />
+        <Route path='/print-badge/combined/:eventUuid/:tabId' element={<PrintBadgeCombined />} />
         <Route path='/print-name/:eventUuid/:tabId' element={<PrintName />} />
       </Route>
     </Routes>

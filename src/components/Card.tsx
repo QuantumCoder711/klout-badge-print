@@ -145,9 +145,10 @@ const Card: React.FC<CardProps> = (props) => {
                             </div>}
 
                             {
-                                showShapes && <div className='flex justify-center items-center gap-5'>
+                                showShapes && <div className='flex flex-wrap justify-center items-center gap-5 w-full'>
                                     <Link to={`/print-badge/square/${props.eventuuid}/${printerNumber}`} className='w-40 rounded-md h-40 grid place-content-center bg-green-600 text-white'>8 x 10 cm</Link>
                                     <Link to={`/print-badge/rectangle/${props.eventuuid}/${printerNumber}`} className='w-40 rounded-md h-60 grid place-content-center bg-red-600 text-white'>10.5 x 14.85 cm</Link>
+                                    <Link to={`/print-badge/combined/${props.eventuuid}/${printerNumber}`} className='w-40 rounded-md h-60 grid place-content-center bg-blue-600 text-white'>4 x 6 inch</Link>
                                 </div>
                             }
                         </DialogHeader> :
