@@ -406,6 +406,66 @@ export const printBadge = (container: HTMLElement | null, width: string, height:
     setTimeout(cleanup, 200); // Fallback cleanup in case onafterprint doesn't fire
 };
 
+export const printGenesys = (container: HTMLElement | null, width: string, height: string, type: string) => {
+    if (!container) {
+        console.error("No badge container found for printing");
+        return;
+    }
+
+    // Create a temporary print container
+    const printContainer = document.createElement("div");
+    printContainer.style.position = "absolute";
+    printContainer.style.padding = "0px";
+    printContainer.style.top = "0";
+    printContainer.style.left = "0";
+    printContainer.style.right = "0";
+    printContainer.style.width = "100%";
+    printContainer.style.height = "100%";
+    printContainer.style.zIndex = "9999";
+    printContainer.style.margin = "auto !important";
+    printContainer.style.backgroundColor = "white";
+    printContainer.style.overflow = "hidden";
+    printContainer.innerHTML = `
+        <div style="width: ${width}; height: ${height}; padding: 0px; margin: auto !important; display: grid; justify-items: center; align-items: center; width: 100%;">
+            ${container.outerHTML}
+        </div>
+    `;
+
+    // Append the print container to the body
+    document.body.appendChild(printContainer);
+
+    // Add styles for printing
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+        @page {
+            size: ${type}; /* Set the page size */
+            margin-top: 0px; /* Remove default margins */
+        }
+        body {
+            -webkit-print-color-adjust: exact; /* Ensure colors are preserved */
+        }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Cleanup function to restore the original state
+    const cleanup = () => {
+        if (document.body.contains(printContainer)) {
+            document.body.removeChild(printContainer);
+        }
+        if (document.head.contains(styleSheet)) {
+            document.head.removeChild(styleSheet);
+        }
+        window.onafterprint = null; // Clear the event listener
+    };
+
+    // Trigger print
+    window.print();
+
+    // Use both onafterprint and a fallback timeout to ensure cleanup
+    window.onafterprint = cleanup;
+    setTimeout(cleanup, 200); // Fallback cleanup in case onafterprint doesn't fire
+};
+
 // Backup
 // export const printName = (container: HTMLElement | null) => {
 //     if (!container) {

@@ -3,6 +3,7 @@ import socket from '../../socket';
 import { printBadge } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
+import Genesys from "@/assets/genesys.png";
 
 interface Badge {
     imageUrl: string;
@@ -14,14 +15,18 @@ interface Badge {
     tabId: string;
 }
 
-const PrintBadgeCombined: React.FC = () => {
+const BadgePrint: React.FC = () => {
     const { eventUuid, tabId, print } = useParams<{ eventUuid: string, tabId: string, print: string }>();
     console.log(print);
     const userId = localStorage.getItem("userId");
 
-    const width = "101.6mm"; // 4 inches
-    const height = "152.4mm"; // 6 inches
-    const type = "A6"; // Or a custom type if needed, but A6 is close to 4x6
+    const width = "105mm";
+    const height = "148.5";
+    const type = "A6";
+
+    // const width = "80mm";
+    // const height = "100mm";
+    // const type = "A2";
 
     const link: string = `https://kloutclub.page.link/?link=${encodeURIComponent(
         `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
@@ -91,27 +96,29 @@ const PrintBadgeCombined: React.FC = () => {
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
-            {badgeData && (
+            {true && (
                 <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                    <div ref={badgeRef} className='w-full mx-auto'>
+                    <div ref={badgeRef} className='w-full mx-auto border-b-2 border-red-600'>
                         <div className="w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
-                            {/* Image section */}
                             <img
-                                src={`${baseUrl}/${badgeData?.imageUrl}`}
-                                className="w-full h-auto object-cover"
+                                // src={`${baseUrl}/${badgeData?.imageUrl}`}
+                                src={Genesys}
+                                className="!h-[150px] w-[300px] rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            {/* Content section (similar to square badge) */}
-                            <div className='p-5'>
-                                <h3 className="font-bold text-4xl pt-5 text-neutral-600 text-center">
-                                    {badgeData?.attendeeName || "N/A"}
+                            <div className='mx-2 pb-5'>
+                                <h3 className="font-bold text-5xl pt-5">
+                                    {badgeData?.attendeeName || "Dev"}
                                 </h3>
-                                <span className="font-bold text-2xl pb-5 text-neutral-600 text-center">
-                                    {badgeData?.attendeeCompany || "N/A"}
+                                <h3 className="font-medium text-3xl pt-2">
+                                    {badgeData?.attendeeName || "Yadav"}
+                                </h3>
+                                <span className="text-xl capitalize pt-3 pb-5">
+                                    {badgeData?.attendeeCompany || "Google"}
                                 </span>
-                                <div className="pt-0 text-3xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
-                                    {badgeData?.attendeeRole || "Delegate"}
-                                </div>
+                            </div>
+                            <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
+                                {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
                     </div>
@@ -124,7 +131,7 @@ const PrintBadgeCombined: React.FC = () => {
                 </div>
             )}
 
-            {showQrCode && (
+            {!showQrCode && (
                 <div className="h-full px-5 mt-10 w-fit mx-auto">
                     <p className="text-3xl font-bold text-zinc-600 mb-5 text-center">
                         Scan the QR Code.
@@ -136,4 +143,4 @@ const PrintBadgeCombined: React.FC = () => {
     );
 };
 
-export default PrintBadgeCombined; 
+export default BadgePrint;
