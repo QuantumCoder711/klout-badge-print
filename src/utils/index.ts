@@ -379,7 +379,7 @@ export const printBadge = (container: HTMLElement | null, width: string, height:
     styleSheet.textContent = `
         @page {
             size: ${type}; /* Set the page size */
-            margin: 0; /* Remove default margins */
+            margin-top: 20px; /* Remove default margins */
         }
         body {
             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */

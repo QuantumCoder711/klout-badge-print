@@ -97,18 +97,18 @@ const BadgePrint: React.FC = () => {
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                    <div ref={badgeRef} className='w-fit mx-auto !px-2 !pb-5 pt-2 border-b-2 border-red-600'>
-                        <div className="max-w-96 w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
+                    <div ref={badgeRef} className='w-full mx-auto !px-2 !pb-5 pt-2 border-b-2 border-red-600'>
+                        <div className="m-5 w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 src={`${baseUrl}/${badgeData?.imageUrl}`}
-                                className="!h-60 rounded-t mx-auto object-cover"
+                                className="!h-[300px] w-[300px] rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            <h3 className="font-bold text-4xl pt-10 text-center">
-                                {badgeData?.attendeeName || "Attendee Name"}
+                            <h3 className="font-bold text-3xl pt-5 text-center">
+                                {badgeData?.attendeeName || "N/A"}
                             </h3>
-                            <span className="font-bold text-3xl pb-10 text-center">
-                                {badgeData?.attendeeCompany || "Company Name"}
+                            <span className="font-bold text-2xl capitalize pb-5 text-center">
+                                {badgeData?.attendeeCompany || "N/A"}
                             </span>
                             <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
                                 {badgeData?.attendeeRole || "Delegate"}
