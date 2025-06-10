@@ -13,6 +13,7 @@ interface Badge {
     eventOwnerId: string;
     eventUuid: string;
     tabId: string;
+    designation: string
 }
 
 const BadgePrint: React.FC = () => {
@@ -99,7 +100,7 @@ const BadgePrint: React.FC = () => {
             {badgeData && (
                 <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
                     <div ref={badgeRef} className='w-full mx-auto'>
-                        <div className="w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
+                        <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
                                 src={Genesys}
@@ -111,20 +112,20 @@ const BadgePrint: React.FC = () => {
                                     {badgeData?.attendeeName || "N/A"}
                                 </h3>
                                 <h3 className="font-medium text-4xl pt-3 mb-2">
-                                    {badgeData?.attendeeName || "N/A"}
+                                    {badgeData?.designation || "N/A"}
                                 </h3>
                                 <span className="text-2xl capitalize pt-3 pb-5">
                                     {badgeData?.attendeeCompany || "N/A"}
                                 </span>
                             </div>
-                            <div className="pt-4 pb-3 mt-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
+                            <div className="pt-4 mt-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
                     </div>
                     <button
                         onClick={handlePrint}
-                        className="px-5 py-2 mt-3 rounded bg-gradient-to-br from-sky-500 to-teal-500 font-semibold text-white"
+                        className="px-5 py-2 mt-6 rounded bg-gradient-to-br from-sky-500 to-teal-500 font-semibold text-white"
                     >
                         Print
                     </button>
