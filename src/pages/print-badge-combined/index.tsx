@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import socket from '../../socket';
-import { printBadge } from '../../utils';
+import { printBadge, printGenesys } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import Genesys from "@/assets/genesys.png";
@@ -22,7 +22,7 @@ const BadgePrint: React.FC = () => {
     const userId = localStorage.getItem("userId");
 
     const width = "105mm";
-    const height = "148.5";
+    const height = "148.5mm";
     const type = "A6";
 
     // const width = "80mm";
@@ -88,7 +88,7 @@ const BadgePrint: React.FC = () => {
 
     const handlePrint = () => {
         // Call the printBadge function and then show QR code after a delay
-        printBadge(badgeRef.current, width, height, type);
+        printGenesys(badgeRef.current, width, height, type);
         setTimeout(() => {
             setShowQrCode(true); // Show QR code after printing or canceling the print dialog
             setBadgeData(undefined); // Clear badge data
@@ -98,27 +98,27 @@ const BadgePrint: React.FC = () => {
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
-                <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                    <div ref={badgeRef} className='w-full mx-auto'>
+                <div className="grid place-content-center max-w-96 max-h-fit h-96 w-fit p-3 scale-75 -mt-12">
+                    <div ref={badgeRef} className='w-full mx-auto h-full'>
                         <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
                                 src={Genesys}
-                                className="!h-[150px] w-[300px] rounded-t mx-auto object-cover"
+                                className="!h-[160px] w-full rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            <div className='mx-2 pb-5 !capitalize'>
+                            <div className='mx-4 pb-5 !capitalize'>
                                 <h3 className="font-bold text-7xl pt-5 mb-2">
-                                    {badgeData?.attendeeName || "N/A"}
+                                    {badgeData?.attendeeName || "Neeraj Chinwan"}
                                 </h3>
                                 <h3 className="font-medium text-4xl pt-3 mb-2">
-                                    {badgeData?.designation || "N/A"}
+                                    {badgeData?.designation || "Chief Technology Officer"}
                                 </h3>
                                 <span className="text-2xl capitalize pt-3 pb-5">
-                                    {badgeData?.attendeeCompany || "N/A"}
+                                    {badgeData?.attendeeCompany || "Klout Club"}
                                 </span>
                             </div>
-                            <div className="pt-4 mt-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
+                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>

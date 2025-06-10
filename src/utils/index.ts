@@ -439,7 +439,7 @@ export const printGenesys = (container: HTMLElement | null, width: string, heigh
     styleSheet.textContent = `
         @page {
             size: ${type}; /* Set the page size */
-            margin-top: 0px; /* Remove default margins */
+            margin-top: 20px; /* Remove default margins */
         }
         body {
             -webkit-print-color-adjust: exact; /* Ensure colors are preserved */

@@ -20,7 +20,7 @@ const BadgePrint: React.FC = () => {
     const userId = localStorage.getItem("userId");
 
     const width = "105mm";
-    const height = "148.5";
+    const height = "148.5mm";
     const type = "A6";
 
     // const width = "80mm";
@@ -105,10 +105,10 @@ const BadgePrint: React.FC = () => {
                                 alt="Badge"
                             />
                             <h3 className="font-bold text-3xl pt-5 text-center">
-                                {badgeData?.attendeeName || "N/A"}
+                                {badgeData?.attendeeName || "Neeraj Chinwan"}
                             </h3>
                             <span className="font-bold text-2xl capitalize pb-5 text-center">
-                                {badgeData?.attendeeCompany || "N/A"}
+                                {badgeData?.attendeeCompany || "Google"}
                             </span>
                             <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
                                 {badgeData?.attendeeRole || "Delegate"}
