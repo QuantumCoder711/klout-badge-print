@@ -3,7 +3,7 @@ import socket from '../../socket';
 import { printGenesys } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-import Genesys from "@/assets/genesys.png";
+import BadgeBanner from "@/assets/badge-banner.jpg";
 
 interface Badge {
     imageUrl: string;
@@ -103,22 +103,22 @@ const BadgePrint: React.FC = () => {
                         <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
-                                src={Genesys}
+                                src={BadgeBanner}
                                 className="!h-[160px] w-full rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
                             <div className='mx-4 pb-5 !capitalize'>
                                 <h3 className="font-bold text-7xl pt-5 mb-2">
-                                    {badgeData?.attendeeName || "Neeraj Chinwan"}
+                                    {badgeData?.attendeeName || "Attendee Name"}
                                 </h3>
                                 <h3 className="font-medium text-4xl pt-3 mb-2">
-                                    {badgeData?.designation || "Chief Technology Officer"}
+                                    {badgeData?.designation || "Designation"}
                                 </h3>
                                 <span className="text-2xl capitalize pt-3 pb-5">
-                                    {badgeData?.attendeeCompany || "Klout Club"}
+                                    {badgeData?.attendeeCompany || "Company Name"}
                                 </span>
                             </div>
-                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-orange-500 text-white">
+                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-green-500 to-blue-500 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
