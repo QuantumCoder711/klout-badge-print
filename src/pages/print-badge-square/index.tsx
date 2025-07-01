@@ -172,6 +172,7 @@ interface Badge {
     eventOwnerId: string;
     eventUuid: string;
     tabId: string;
+    designation: string
 }
 
 const PrintBadgeSquare: React.FC = () => {
@@ -265,6 +266,7 @@ const PrintBadgeSquare: React.FC = () => {
                         <h3 className="font-bold text-4xl pt-5 text-center">
                             {badgeData.attendeeName || "Attendee Name"}
                         </h3>
+                        <h5 className='font-semibold pt-4 pb-10 text-center text-2xl'>{badgeData.designation}</h5>
                         <span className="font-bold text-2xl pb-5 text-center">
                             {badgeData.attendeeCompany || "Company Name"}
                         </span>

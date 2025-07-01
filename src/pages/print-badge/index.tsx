@@ -12,6 +12,7 @@ interface Badge {
     eventOwnerId: string;
     eventUuid: string;
     tabId: string;
+    designation: string
 }
 
 const BadgePrint: React.FC = () => {
@@ -19,8 +20,8 @@ const BadgePrint: React.FC = () => {
     console.log(print);
     const userId = localStorage.getItem("userId");
 
-    const width = "105mm";
-    const height = "148.5mm";
+    const width = "130mm";
+    const height = "180mm";
     const type = "A6";
 
     // const width = "80mm";
@@ -97,20 +98,25 @@ const BadgePrint: React.FC = () => {
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 w-fit p-3 scale-75 -mt-12">
-                    <div ref={badgeRef} className='w-full mx-auto !px-2 !pb-5 pt-2 border-b-2 border-red-600'>
+                    <div ref={badgeRef} className='w-full mx-auto max-h-fit !px-2 pt-2'>
                         <div className="m-5 w-full h-auto mx-auto overflow-hidden rounded bg-white flex flex-col">
                             <img
                                 src={`${baseUrl}/${badgeData?.imageUrl}`}
-                                className="!h-[300px] w-[300px] rounded-t mx-auto object-cover"
+                                className="!w-full !h-auto rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
-                            <h3 className="font-bold text-3xl pt-5 text-center">
-                                {badgeData?.attendeeName || "Neeraj Chinwan"}
-                            </h3>
-                            <span className="font-bold text-2xl capitalize pb-5 text-center">
-                                {badgeData?.attendeeCompany || "Google"}
-                            </span>
-                            <div className="pt-3 text-5xl text-center boxShadow text-neutral-800 font-extrabold uppercase">
+                            <div className='mx-4 pb-5 !capitalize'>
+                                <h3 className="font-bold text-7xl pt-5 mb-2">
+                                    {badgeData?.attendeeName || "N/A"}
+                                </h3>
+                                <h3 className="font-medium text-4xl pt-3 mb-2">
+                                    {badgeData?.designation || "N/A"}
+                                </h3>
+                                <span className="text-2xl capitalize pt-3 pb-5">
+                                    {badgeData?.attendeeCompany || "N/A"}
+                                </span>
+                            </div>
+                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-blue-600 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>

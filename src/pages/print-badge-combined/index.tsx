@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import socket from '../../socket';
-import { printBadge, printGenesys } from '../../utils';
+import { printGenesys } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import Genesys from "@/assets/genesys.png";
