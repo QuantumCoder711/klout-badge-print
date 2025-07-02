@@ -31,14 +31,11 @@ const Dashboard: React.FC = () => {
     fetchTotalEvents(token).then(res => {
       // console.log(res.data);
       // setEvents(res.data);
-      console.log(res.data);
       const upcomingEvents = res.data.filter((event: Event) => {
         const eventDate: Date = new Date(event.event_start_date);
         eventDate.setHours(0, 0, 0, 0);
         return eventDate >= today;
-      }).slice(0, 4);
-
-      console.log(upcomingEvents);
+      });
 
       setEvents(upcomingEvents);
     })
