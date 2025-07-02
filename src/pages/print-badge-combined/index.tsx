@@ -95,30 +95,35 @@ const BadgePrint: React.FC = () => {
         }, 1000); // Delay ensures the print dialog finishes first
     };
 
+    const fullName = `${badgeData?.attendeeName}`.trim();
+    // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
+    const isLongName = fullName.length > 15;
+
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 max-h-fit h-96 w-fit p-3 scale-75 mt-10">
-                    <div ref={badgeRef} className='w-full mx-auto h-full'>
-                        <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col">
+                    <div ref={badgeRef} className='w-full mx-auto h-full flex flex-1 pb-4'>
+                        <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col justify-between flex-1">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
                                 src={BadgeBanner}
                                 className="!h-[160px] w-full rounded-t mx-auto object-cover"
                                 alt="Badge"
                             />
+
                             <div className='mx-4 pb-5 !capitalize'>
-                                <h3 className="font-bold text-7xl pt-5 mb-2">
-                                    {badgeData?.attendeeName || "Attendee Name"}
+                                <h3 className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-5 mb-2`}>
+                                    {fullName || 'Attendee Name'}
                                 </h3>
-                                <h3 className="font-medium text-4xl pt-3 mb-2">
+                                <h3 className={`font-medium ${isLongName ? 'text-2xl' : 'text-3xl'} pt-3 mb-2`}>
                                     {badgeData?.designation || "Designation"}
                                 </h3>
-                                <span className="text-2xl capitalize pt-3 pb-5">
-                                    {badgeData?.attendeeCompany || "Company Name"}
+                                <span className={`${isLongName ? 'text-xl' : 'text-2xl'} capitalize pt-3 pb-5`}>
+                                    {badgeData?.attendeeCompany || "Company"}
                                 </span>
                             </div>
-                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-green-500 to-blue-500 text-white">
+                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-green-500 to-brand-primary text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
