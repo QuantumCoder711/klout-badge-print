@@ -123,7 +123,7 @@ const BadgePrint: React.FC = () => {
                                     {badgeData?.attendeeCompany || "Company"}
                                 </span>
                             </div>
-                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-green-500 to-blue-500 text-white">
+                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-blue-900 to-slate-900 text-white">
                                 {badgeData?.attendeeRole || "Delegate"}
                             </div>
                         </div>
