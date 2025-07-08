@@ -200,8 +200,18 @@ const BadgePrint: React.FC = () => {
                                     {badgeData.attendeeCompany?.toLowerCase() || "Company"}
                                 </span>
                             </div>
-                            <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-blue-900 to-slate-900 text-white">
-                                {badgeData.attendeeRole?.toLowerCase() || "Delegate"}
+                            <div
+                                style={
+                                    badgeData.attendeeRole.toLowerCase() === "delegate"
+                                        ? { backgroundColor: 'white', color: 'black', border: '1px solid black' }
+                                        : badgeData.attendeeRole.toLowerCase() === "speaker"
+                                            ? { backgroundColor: '#80365F', color: 'white' }
+                                            : badgeData.attendeeRole.toLowerCase() === "sponsor"
+                                                ? { backgroundColor: 'black', color: 'white' }
+                                                : {}
+                                }
+                                className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r">
+                                {(badgeData?.attendeeRole?.toLowerCase() === "sponsor" ? "Partner" : badgeData?.attendeeRole?.toLowerCase()) || "Delegate"}
                             </div>
                         </div>
                     </div>
