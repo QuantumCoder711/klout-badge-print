@@ -98,17 +98,8 @@ const badgeRefPrint = (badgeRef: React.RefObject<HTMLDivElement>) => {
 
 
 const BadgePrint: React.FC = () => {
-    const { eventUuid, tabId, print } = useParams<{ eventUuid: string, tabId: string, print: string }>();
-    console.log(print);
+    const { eventUuid, tabId } = useParams<{ eventUuid: string, tabId: string, print: string }>();
     const userId = localStorage.getItem("userId");
-
-    // const width = "105mm";
-    // const height = "148.5mm";
-    // const type = "A6";
-
-    // const width = "80mm";
-    // const height = "100mm";
-    // const type = "A2";
 
     const link: string = `https://kloutclub.page.link/?link=${encodeURIComponent(
         `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
@@ -167,6 +158,14 @@ const BadgePrint: React.FC = () => {
         };
     }, [userId, eventUuid, tabId]);
 
+    const firstName = badgeData?.attendeeName.split(" ")[0] || '';
+    const lastName = badgeData?.attendeeName.split(" ")[1] || '';
+    const companyName = badgeData?.attendeeCompany || '';
+    const jobTitle = badgeData?.designation || '';
+
+    // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
+    const isLongName = (firstName + lastName).length > 13 || companyName.length > 28 || jobTitle.length > 32;
+
     const handlePrint = () => {
         // Call the printBadge function and then show QR code after a delay
         badgeRefPrint(badgeRef);
@@ -175,10 +174,6 @@ const BadgePrint: React.FC = () => {
             setBadgeData(undefined); // Clear badge data
         }, 1000); // Delay ensures the print dialog finishes first
     };
-
-    const fullName = `${badgeData?.attendeeName}`.trim();
-    // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
-    const isLongName = fullName.length > 15;
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
@@ -194,7 +189,7 @@ const BadgePrint: React.FC = () => {
                             />
 
                             <div className='mx-4 pb-3 !capitalize'>
-                                <div className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-5`}>
+                                <div className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-2`}>
                                     <h3 className="mb-2">{badgeData.attendeeName.split(" ")[0]?.toLowerCase() || 'First Name'}</h3>
                                     <h3 className="mb-2">{badgeData.attendeeName.split(" ")[1]?.toLowerCase() || 'Last Name'}</h3>
                                 </div>
