@@ -179,7 +179,7 @@ const BadgePrint: React.FC = () => {
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 max-h-fit h-96 w-fit p-3 scale-75 mt-10">
-                    <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-1', !isIOS && 'pb-4')}>
+                    <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-1')}>
                         <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col justify-between flex-1">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
