@@ -164,7 +164,7 @@ const BadgePrint: React.FC = () => {
     const jobTitle = badgeData?.designation || '';
 
     // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
-    const isLongName = (firstName + lastName).length > 13 || companyName.length > 26 || jobTitle.length > 28;
+    const isLongName = firstName.length > 13 || lastName.length > 13 || companyName.length > 28 || jobTitle.length > 32;
 
     const handlePrint = () => {
         // Call the printBadge function and then show QR code after a delay
