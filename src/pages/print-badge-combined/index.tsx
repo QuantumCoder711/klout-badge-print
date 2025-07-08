@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import socket from '../../socket';
-import { printGenesys } from '../../utils';
+import { printDynamicBadge } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import BadgeBanner from "@/assets/badge-banner.jpg";
+import { cn } from '@/lib/utils';
 
 interface Badge {
     imageUrl: string;
@@ -16,14 +17,94 @@ interface Badge {
     designation: string
 }
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
+
+const badgeRefPrint = (badgeRef: React.RefObject<HTMLDivElement>) => {
+    if (!badgeRef.current) return;
+
+    if (isIOS) {
+        const badgeHTML = badgeRef.current.outerHTML;
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) return;
+
+        const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+            .map((el) => el.outerHTML)
+            .join('\n');
+
+        printWindow.document.write(`
+  <html>
+    <head>
+      <title>Print Badge</title>
+      ${styles}
+      <style>
+        @page {
+          size: A6 portrait;
+          margin: 0;
+          padding: 0;
+        }
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+          background: white;
+        }
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          overflow: hidden;
+        }
+        #print-wrapper {
+          width: 100%; /* badge width */
+          height: 100%; /* badge height */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        #print-wrapper > * {
+          width: 100% !important;
+          height: 100% !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+          overflow: hidden !important;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="print-wrapper">
+        ${badgeHTML}
+      </div>
+      <script>
+        window.onload = function() {
+          window.print();
+          window.onafterprint = function() {
+            window.close();
+          };
+          setTimeout(() => window.close(), 1000);
+        };
+      </script>
+    </body>
+  </html>
+`);
+        printWindow.document.close();
+    } else {
+        // Desktop print using overlay
+        printDynamicBadge(badgeRef.current, '100%', '100%', 'auto');
+    }
+};
+
+
 const BadgePrint: React.FC = () => {
     const { eventUuid, tabId, print } = useParams<{ eventUuid: string, tabId: string, print: string }>();
     console.log(print);
     const userId = localStorage.getItem("userId");
 
-    const width = "105mm";
-    const height = "148.5mm";
-    const type = "A6";
+    // const width = "105mm";
+    // const height = "148.5mm";
+    // const type = "A6";
 
     // const width = "80mm";
     // const height = "100mm";
@@ -88,7 +169,7 @@ const BadgePrint: React.FC = () => {
 
     const handlePrint = () => {
         // Call the printBadge function and then show QR code after a delay
-        printGenesys(badgeRef.current, width, height, type);
+        badgeRefPrint(badgeRef);
         setTimeout(() => {
             setShowQrCode(true); // Show QR code after printing or canceling the print dialog
             setBadgeData(undefined); // Clear badge data
@@ -103,7 +184,7 @@ const BadgePrint: React.FC = () => {
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 max-h-fit h-96 w-fit p-3 scale-75 mt-10">
-                    <div ref={badgeRef} className='w-full mx-auto h-full flex flex-1 pb-4'>
+                    <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-1', !isIOS && 'pb-4')}>
                         <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col justify-between flex-1">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
@@ -112,22 +193,25 @@ const BadgePrint: React.FC = () => {
                                 alt="Badge"
                             />
 
-                            <div className='mx-4 pb-5 !capitalize'>
-                                <h3 className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-5 mb-2`}>
-                                    {fullName || 'Attendee Name'}
+                            <div className='mx-4 pb-3 !capitalize'>
+                                <div className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-5`}>
+                                    <h3 className="mb-2">{badgeData.attendeeName.split(" ")[0]?.toLowerCase() || 'First Name'}</h3>
+                                    <h3 className="mb-2">{badgeData.attendeeName.split(" ")[1]?.toLowerCase() || 'Last Name'}</h3>
+                                </div>
+                                <h3 className={`font-medium ${isLongName ? 'text-2xl' : 'text-3xl'} pt-2 mb-2`}>
+                                    {badgeData.designation?.toLowerCase() || "Designation"}
                                 </h3>
-                                <h3 className={`font-medium ${isLongName ? 'text-2xl' : 'text-3xl'} pt-3 mb-2`}>
-                                    {badgeData?.designation || "Designation"}
-                                </h3>
-                                <span className={`${isLongName ? 'text-xl' : 'text-2xl'} capitalize pt-3 pb-5`}>
-                                    {badgeData?.attendeeCompany || "Company"}
+                                <span className={`${isLongName ? 'text-xl' : 'text-2xl'} capitalize pt-2 pb-2`}>
+                                    {badgeData.attendeeCompany?.toLowerCase() || "Company"}
                                 </span>
                             </div>
                             <div className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r from-blue-900 to-slate-900 text-white">
-                                {badgeData?.attendeeRole || "Delegate"}
+                                {badgeData.attendeeRole?.toLowerCase() || "Delegate"}
                             </div>
                         </div>
                     </div>
+
+
                     <button
                         onClick={handlePrint}
                         className="px-5 py-2 mt-6 rounded bg-gradient-to-br from-sky-500 to-teal-500 font-semibold text-white"
