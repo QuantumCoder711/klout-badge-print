@@ -109,7 +109,16 @@ const BadgePrint: React.FC = () => {
         `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
     )}&_icp=1`;
 
-    const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
+    const [badgeData, setBadgeData] = useState<Badge | undefined>({
+            imageUrl: "",
+            attendeeName: "Lavlesh Dubey",
+            attendeeCompany: "Google",
+            attendeeRole: "Delegate",
+            eventOwnerId: "",
+            eventUuid: "",
+            tabId: "",
+            designation: "Software Engineer"
+    });
     const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
     // const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
@@ -164,7 +173,9 @@ const BadgePrint: React.FC = () => {
     const jobTitle = badgeData?.designation || '';
 
     // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
-    const isLongName = firstName.length > 13 || lastName.length > 13 || companyName.length > 28 || jobTitle.length > 32;
+    const isLongName = (firstName.length + lastName.length) > 20; // Adjusted to consider both first and last name
+    const isLongCompanyName = companyName.length > 38;
+    const isLongJobTitle = jobTitle.length > 68;
 
     const handlePrint = () => {
         // Call the printBadge function and then show QR code after a delay
@@ -172,14 +183,16 @@ const BadgePrint: React.FC = () => {
         setTimeout(() => {
             setShowQrCode(true); // Show QR code after printing or canceling the print dialog
             setBadgeData(undefined); // Clear badge data
-        }, 1000); // Delay ensures the print dialog finishes first
+        }, 10000); // Delay ensures the print dialog finishes first
     };
 
     return (
         <div className='flex gap-40 items-center w-fit mx-auto'>
             {badgeData && (
                 <div className="grid place-content-center max-w-96 max-h-fit h-96 w-fit p-3 scale-75 mt-10">
-                    <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-1')}>
+
+                    <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-col gap-3 flex-1', !isIOS && '')}>
+                        {/* Card 1 */}
                         <div className="w-full mx-auto overflow-hidden rounded bg-white flex flex-col justify-between flex-1">
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
@@ -189,28 +202,63 @@ const BadgePrint: React.FC = () => {
                             />
 
                             <div className='mx-4 pb-3 !capitalize'>
-                                <div className={`font-bold ${isLongName ? 'text-4xl' : 'text-6xl'} pt-2`}>
-                                    <h3 className="mb-2">{badgeData.attendeeName.split(" ")[0]?.toLowerCase() || 'First Name'}</h3>
-                                    <h3 className="mb-2">{badgeData.attendeeName.split(" ")[1]?.toLowerCase() || 'Last Name'}</h3>
+                                <div className={`font-bold ${isLongName ? 'text-3xl' : 'text-5xl'}`}>
+                                    <h3 className="mb-2">{firstName?.toLowerCase() || 'First Name'} {lastName?.toLowerCase() || 'Last Name'}</h3>
+                                    {/* <h3 className="mb-2">{}</h3> */}
                                 </div>
-                                <h3 className={`font-medium ${isLongName ? 'text-2xl' : 'text-3xl'} pt-2 mb-2`}>
-                                    {badgeData.designation?.toLowerCase() || "Designation"}
+                                <h3 className={`font-medium ${isLongCompanyName ? 'text-2xl' : 'text-3xl'} pt-2 mb-2`}>
+                                    {badgeData?.attendeeCompany?.toLowerCase() || "Company"}
                                 </h3>
-                                <span className={`${isLongName ? 'text-xl' : 'text-2xl'} capitalize pt-2 pb-2`}>
-                                    {badgeData.attendeeCompany?.toLowerCase() || "Company"}
+                                <span className={`${isLongJobTitle ? 'text-lg' : 'text-xl'} capitalize pt-2 pb-2`}>
+                                    {badgeData?.designation?.toLowerCase() || "Designation"}
                                 </span>
                             </div>
                             <div
                                 style={
-                                    badgeData.attendeeRole.toLowerCase() === "delegate"
+                                    badgeData?.attendeeRole.toLowerCase() === "delegate"
                                         ? { backgroundColor: 'white', color: 'black', border: '1px solid black' }
-                                        : badgeData.attendeeRole.toLowerCase() === "speaker"
+                                        : badgeData?.attendeeRole.toLowerCase() === "speaker"
                                             ? { backgroundColor: '#80365F', color: 'white' }
-                                            : badgeData.attendeeRole.toLowerCase() === "sponsor"
+                                            : badgeData?.attendeeRole.toLowerCase() === "sponsor"
                                                 ? { backgroundColor: 'black', color: 'white' }
                                                 : {}
                                 }
-                                className="py-4 text-2xl text-center capitalize font-semibold bg-gradient-to-r">
+                                className="py-4 text-xl text-center capitalize font-semibold bg-gradient-to-r">
+                                {(badgeData?.attendeeRole?.toLowerCase() === "sponsor" ? "Partner" : badgeData?.attendeeRole?.toLowerCase()) || "Delegate"}
+                            </div>
+                        </div>
+                        {/* Card 2 */}
+                        <div className="w-full -rotate-180 mx-auto overflow-hidden rounded bg-white hidden print:flex flex-col justify-between flex-1">
+                            <img
+                                // src={`${baseUrl}/${badgeData?.imageUrl}`}
+                                src={BadgeBanner}
+                                className="!h-[160px] w-full rounded-t mx-auto object-cover"
+                                alt="Badge"
+                            />
+
+                            <div className='mx-4 pb-3 !capitalize'>
+                                <div className={`font-bold ${isLongName ? 'text-3xl' : 'text-5xl'}`}>
+                                    <h3 className="mb-2">{firstName?.toLowerCase() || 'First Name'} {lastName?.toLowerCase() || 'Last Name'}</h3>
+                                    {/* <h3 className="mb-2">{}</h3> */}
+                                </div>
+                                <h3 className={`font-medium ${isLongCompanyName ? 'text-2xl' : 'text-3xl'} pt-2 mb-2`}>
+                                    {badgeData?.attendeeCompany?.toLowerCase() || "Company"}
+                                </h3>
+                                <span className={`${isLongJobTitle ? 'text-lg' : 'text-xl'} capitalize pt-2 pb-2`}>
+                                    {badgeData?.designation?.toLowerCase() || "Designation"}
+                                </span>
+                            </div>
+                            <div
+                                style={
+                                    badgeData?.attendeeRole.toLowerCase() === "delegate"
+                                        ? { backgroundColor: 'white', color: 'black', border: '1px solid black' }
+                                        : badgeData?.attendeeRole.toLowerCase() === "speaker"
+                                            ? { backgroundColor: '#80365F', color: 'white' }
+                                            : badgeData?.attendeeRole.toLowerCase() === "sponsor"
+                                                ? { backgroundColor: 'black', color: 'white' }
+                                                : {}
+                                }
+                                className="py-4 text-xl text-center capitalize font-semibold bg-gradient-to-r">
                                 {(badgeData?.attendeeRole?.toLowerCase() === "sponsor" ? "Partner" : badgeData?.attendeeRole?.toLowerCase()) || "Delegate"}
                             </div>
                         </div>
