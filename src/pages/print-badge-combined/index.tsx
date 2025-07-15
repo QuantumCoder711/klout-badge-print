@@ -109,16 +109,7 @@ const BadgePrint: React.FC = () => {
         `https://www.klout.club/event/check-in?eventuuid=${eventUuid}&tabId=${tabId}`
     )}&_icp=1`;
 
-    const [badgeData, setBadgeData] = useState<Badge | undefined>({
-            imageUrl: "",
-            attendeeName: "Lavlesh Dubey",
-            attendeeCompany: "Google",
-            attendeeRole: "Delegate",
-            eventOwnerId: "",
-            eventUuid: "",
-            tabId: "",
-            designation: "Software Engineer"
-    });
+    const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
     const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
     // const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
@@ -183,7 +174,7 @@ const BadgePrint: React.FC = () => {
         setTimeout(() => {
             setShowQrCode(true); // Show QR code after printing or canceling the print dialog
             setBadgeData(undefined); // Clear badge data
-        }, 10000); // Delay ensures the print dialog finishes first
+        }, 1000); // Delay ensures the print dialog finishes first
     };
 
     return (
@@ -197,7 +188,7 @@ const BadgePrint: React.FC = () => {
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
                                 src={BadgeBanner}
-                                className="!h-[160px] w-full rounded-t mx-auto object-cover"
+                                className="w-11/12 rounded-t mx-auto mt-[10px] object-contain"
                                 alt="Badge"
                             />
 
@@ -223,7 +214,7 @@ const BadgePrint: React.FC = () => {
                                                 ? { backgroundColor: 'black', color: 'white' }
                                                 : {}
                                 }
-                                className="py-4 text-xl text-center capitalize font-semibold bg-gradient-to-r">
+                                className="py-3 text-xl text-center capitalize font-semibold bg-gradient-to-r w-11/12 mx-auto rounded-3xl">
                                 {(badgeData?.attendeeRole?.toLowerCase() === "sponsor" ? "Partner" : badgeData?.attendeeRole?.toLowerCase()) || "Delegate"}
                             </div>
                         </div>
@@ -232,11 +223,11 @@ const BadgePrint: React.FC = () => {
                             <img
                                 // src={`${baseUrl}/${badgeData?.imageUrl}`}
                                 src={BadgeBanner}
-                                className="!h-[160px] w-full rounded-t mx-auto object-cover"
+                                className="w-11/12 rounded-t mx-auto mt-[10px] object-contain"
                                 alt="Badge"
                             />
 
-                            <div className='mx-4 pb-3 !capitalize'>
+                            <div className='mx-4 pb-3 !capitalize pl-1'>
                                 <div className={`font-bold ${isLongName ? 'text-3xl' : 'text-5xl'}`}>
                                     <h3 className="mb-2">{firstName?.toLowerCase() || 'First Name'} {lastName?.toLowerCase() || 'Last Name'}</h3>
                                     {/* <h3 className="mb-2">{}</h3> */}
@@ -258,7 +249,7 @@ const BadgePrint: React.FC = () => {
                                                 ? { backgroundColor: 'black', color: 'white' }
                                                 : {}
                                 }
-                                className="py-4 text-xl text-center capitalize font-semibold bg-gradient-to-r">
+                                className="py-3 text-xl text-center capitalize font-semibold bg-gradient-to-r rounded-3xl w-11/12 mx-auto">
                                 {(badgeData?.attendeeRole?.toLowerCase() === "sponsor" ? "Partner" : badgeData?.attendeeRole?.toLowerCase()) || "Delegate"}
                             </div>
                         </div>
