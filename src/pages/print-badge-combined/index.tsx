@@ -3,7 +3,7 @@ import socket from '../../socket';
 import { printDynamicBadge } from '../../utils';
 import { useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-import BadgeBanner from "@/assets/badge-banner.jpg";
+import BadgeBanner from "@/assets/badge_banner.png";
 import { cn } from '@/lib/utils';
 
 interface Badge {
@@ -110,6 +110,7 @@ const BadgePrint: React.FC = () => {
     )}&_icp=1`;
 
     const [badgeData, setBadgeData] = useState<Badge | undefined>(undefined);
+    const [showBadgeAgain, setShowBadgeAgain] = useState<Badge | undefined>(undefined);
     const [showQrCode, setShowQrCode] = useState(true); // State to control QR code visibility
     // const baseUrl: string = import.meta.env.VITE_BASE_URL;
     const badgeRef = useRef<HTMLDivElement | null>(null);
@@ -142,6 +143,7 @@ const BadgePrint: React.FC = () => {
                     data.attendeeRole = "Delegate";
                 }
                 setBadgeData(data);
+                setShowBadgeAgain(data);
                 setShowQrCode(false); // Hide QR code when badge is displayed
             }
         });
@@ -175,6 +177,11 @@ const BadgePrint: React.FC = () => {
             setShowQrCode(true); // Show QR code after printing or canceling the print dialog
             setBadgeData(undefined); // Clear badge data
         }, 1000); // Delay ensures the print dialog finishes first
+    };
+
+    const handleShowBadgeAgain = () => {
+        setBadgeData(showBadgeAgain);
+        setShowQrCode(false);
     };
 
     return (
@@ -273,6 +280,8 @@ const BadgePrint: React.FC = () => {
                     <QRCode id='qr-code' value={link} fgColor='#3f3f46' className='max-w-96 max-h-96 mx-auto' />
                 </div>
             )}
+
+            <button hidden={showBadgeAgain ? false : true} onClick={handleShowBadgeAgain} className="px-3 py-2 text-white rounded-md absolute right-5 top-20 bg-green-700 hover:bg-green-800 duration-300">Show Badge Again</button>
         </div>
     );
 };
