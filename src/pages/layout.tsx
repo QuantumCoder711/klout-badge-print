@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 
 const RootLayout: React.FC = () => {
     return (
-        <main className='h-screen'>
+        <main className='h-screen flex flex-col'>
             <Navbar />
             <div className='flex flex-1'>
                 <Outlet />

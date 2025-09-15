@@ -1,5 +1,4 @@
-import { cn, getImageUrl } from '@/lib/utils';
-import { printDynamicBadge } from '@/utils';
+import { cn, getImageUrl, printBadge } from '@/lib/utils';
 import React, { useRef } from 'react';
 
 interface BadgeProps {
@@ -63,7 +62,7 @@ const Badge: React.FC<BadgeProps> = ({
     const isLongName = (firstName.length + lastName.length) > 16; // Adjusted to consider both first and last name
     const isLongCompanyName = companyName.length > 32;
     const isLongJobTitle = jobTitle.length > 68;
-    const badgeRef = useRef<HTMLDivElement>(null);
+    const badgeRef = useRef<HTMLDivElement | null>(null);
 
     const handlePrint = () => {
         if (!badgeRef.current) return;
@@ -138,13 +137,13 @@ const Badge: React.FC<BadgeProps> = ({
             printWindow.document.close();
         } else {
             // Desktop print using overlay
-            printDynamicBadge(badgeRef.current, '100%', '100%', 'auto');
+            printBadge(badgeRef.current, '100%', '100%', 'auto');
         }
     };
 
-
     return (
-        <div className='max-w-80 my-10'>
+        <div className='max-w-80 max-h-96 w-full my-10 mx-auto'>
+            
             {/* Card For Printing... */}
             <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-col gap-3 flex-1', !isIOS && '')}>
                 {/* Card 1 */}
@@ -172,10 +171,10 @@ const Badge: React.FC<BadgeProps> = ({
                                     />
                                 )
                         ) : (
-                            <div className='w-full h-[160px] bg-brand-primary' />
+                            <div className='w-full h-[160px] bg-sky-500' />
                         )
                     ) : (
-                        <div className='w-full h-[160px] bg-brand-primary' />
+                        <div className='w-full h-[160px] bg-sky-500' />
                     )}
 
                     <div className='mx-4 pb-3 !capitalize pl-1'>
@@ -191,7 +190,7 @@ const Badge: React.FC<BadgeProps> = ({
                         </span>
                     </div>
                     <div
-                        className="py-3 text-2xl text-center capitalize font-semibold rounded-3xl max-w-11/12 mx-auto w-full"
+                        className="py-3 text-2xl text-center capitalize font-semibold rounded-3xl w-11/12 mx-auto"
                         style={{
                             backgroundColor: statusColors.background,
                             color: statusColors.text
@@ -199,9 +198,10 @@ const Badge: React.FC<BadgeProps> = ({
                         {status}
                     </div>
                 </div>
+                
                 {/* Card 2 (back side) */}
                 <div
-                    className="w-full rotate-x-180 rotate-y-180 mx-auto overflow-hidden rounded hidden print:flex flex-col justify-between flex-1"
+                    className="w-full rotate-180 mx-auto overflow-hidden rounded hidden print:flex flex-col justify-between flex-1"
                     style={{
                         backgroundColor: colors?.backgroundColor || 'white',
                         color: colors?.textColor || 'inherit'
@@ -212,7 +212,7 @@ const Badge: React.FC<BadgeProps> = ({
                             image.startsWith('data:') || image.startsWith('/') || image.startsWith('http')
                                 ? (
                                     <img
-                                        src={image}
+                                        src={getImageUrl(image)}
                                         className="rounded-t w-full mx-auto object-fill max-h-[160px]"
                                         alt="Badge"
                                     />
@@ -224,10 +224,10 @@ const Badge: React.FC<BadgeProps> = ({
                                     />
                                 )
                         ) : (
-                            <div className='w-full h-[160px] bg-brand-primary' />
+                            <div className='w-full h-[160px] bg-blue-500' />
                         )
                     ) : (
-                        <div className='w-full h-[160px] bg-brand-primary' />
+                        <div className='w-full h-[160px] bg-blue-500' />
                     )}
 
                     <div className='mx-4 pb-3 !capitalize pl-1'>
@@ -243,7 +243,7 @@ const Badge: React.FC<BadgeProps> = ({
                         </span>
                     </div>
                     <div
-                        className="py-3 text-2xl text-center capitalize font-semibold rounded-3xl max-w-11/12 mx-auto w-full"
+                        className="py-3 text-2xl text-center capitalize font-semibold rounded-3xl w-11/12 mx-auto"
                         style={{
                             backgroundColor: statusColors.background,
                             color: statusColors.text
@@ -253,7 +253,7 @@ const Badge: React.FC<BadgeProps> = ({
                 </div>
             </div>
 
-            <button onClick={handlePrint}>Print</button>
+            <button onClick={handlePrint} className='px-4 py-2.5 w-full mt-5 rounded-lg bg-orange-500 text-orange-50'>Print</button>
         </div>
     )
 }

@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-import dashboardReducer from './slices/dashboardSlice';
+import dashboardReducer from './slices/eventSlice';
 import printerReducer from './slices/printerSlice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
-    dashboard: dashboardReducer,
+    event: dashboardReducer,
     printer: printerReducer,
   },
   middleware: (getDefaultMiddleware) =>

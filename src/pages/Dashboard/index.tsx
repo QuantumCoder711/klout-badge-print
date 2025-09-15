@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchEvents } from '../../store/slices/dashboardSlice';
+import { fetchEvents } from '../../store/slices/eventSlice';
 import { Event } from '../../types';
 import Card from '../../components/Card';
 
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { events, loading, error } = useAppSelector((state) => state.dashboard);
+  const { events, loading, error } = useAppSelector((state) => state.event);
 
   useEffect(() => {
     dispatch(fetchEvents());

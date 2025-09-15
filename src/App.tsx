@@ -6,8 +6,8 @@ import Dashboard from './pages/Dashboard';
 import RootLayout from './pages/layout';
 import PrintName from './pages/print-name';
 import PrintBadgeSquare from './pages/print-badge-square';
-import PrintBadgeCombined from './pages/print-badge-combined';
 import ProtectedRoute from './components/ProtectedRoute';
+import PrintDynamicBadge from './pages/print-dynamic-badge';
 
 const App: React.FC = () => {
   return (
@@ -40,7 +40,7 @@ const App: React.FC = () => {
         
         <Route path="/print-badge/combined/:eventUuid/:tabId" element={
           <ProtectedRoute>
-            <PrintBadgeCombined />
+            <PrintDynamicBadge />
           </ProtectedRoute>
         } />
         

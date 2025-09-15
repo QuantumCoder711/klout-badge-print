@@ -43,14 +43,14 @@ export const fetchEvents = createAsyncThunk(
   }
 );
 
-const dashboardSlice = createSlice({
-  name: 'dashboard',
+const eventSlice = createSlice({
+  name: 'event',
   initialState,
   reducers: {
     clearEvents: (state) => {
       state.events = null;
       state.error = null;
-    },
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -83,5 +83,5 @@ const dashboardSlice = createSlice({
   },
 });
 
-export const { clearEvents } = dashboardSlice.actions;
-export default dashboardSlice.reducer;
+export const { clearEvents } = eventSlice.actions;
+export default eventSlice.reducer;
