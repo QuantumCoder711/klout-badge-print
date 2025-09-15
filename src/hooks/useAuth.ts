@@ -15,16 +15,22 @@ export const useAuth = () => {
       // Here you might want to fetch user data from an endpoint like /api/me
       // For now, we'll just update the token in the state
       dispatch(loginUser.fulfilled({
-        id: parseInt(userId, 10),
-        access_token: token,
-        access_token_type: 'Bearer',
-        email: '', // These will be empty until we fetch the user data
-        name: '',
-        company_name: '',
-        message: '',
-        status: 200,
-        user_id: parseInt(userId, 10),
-        user_uuid: ''
+        token: token,
+        user: {
+          name: '',
+          user_id: parseInt(userId, 10),
+          user_uuid: '',
+          company_name: ''
+        }
+        // access_token: token,
+        // access_token_type: 'Bearer',
+        // email: '', // These will be empty until we fetch the user data
+        // name: '',
+        // company_name: '',
+        // message: '',
+        // status: 200,
+        // user_id: parseInt(userId, 10),
+        // user_uuid: ''
       }, 'auth/checkAuth', { email: '', password: '' }));
     }
   }, [dispatch, user]);

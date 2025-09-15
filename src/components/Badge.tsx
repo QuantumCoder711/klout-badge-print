@@ -20,63 +20,26 @@ interface BadgeProps {
             panelist: { background: string; text: string };
         };
     };
+    setBadgeData: (badgeData: any | undefined) => void;
+    setShowQrCode: (showQrCode: boolean) => void;
 }
 
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !('MSStream' in window);
 
-const Badge: React.FC<BadgeProps> = ({
-    firstName,
-    lastName,
-    company,
-    designation,
-    image,
-    status,
-    statusBackground = '#000000',
-    statusTextColor = '#ffffff',
-    colors
-}) => {
-    const companyName = company || '';
-    const jobTitle = designation || '';
 
-    // Get status colors based on attendee status or use default
-    const getStatusColors = () => {
-        if (!colors || !status) return { background: statusBackground, text: statusTextColor };
+const handlePrintBadge = (badgeRef: React.RefObject<HTMLDivElement>) => {
+    if (!badgeRef.current) return;
 
-        const attendeeStatus = status.toLowerCase();
-        switch (attendeeStatus) {
-            case 'speaker':
-                return colors.statusColors.speaker;
-            case 'sponsor':
-                return colors.statusColors.sponsor;
-            case 'panelist':
-                return colors.statusColors.panelist;
-            case 'delegate':
-            default:
-                return colors.statusColors.delegate;
-        }
-    };
+    if (isIOS) {
+        const badgeHTML = badgeRef.current.outerHTML;
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) return;
 
-    const statusColors = getStatusColors();
+        const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+            .map((el) => el.outerHTML)
+            .join('\n');
 
-    // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
-    const isLongName = (firstName.length + lastName.length) > 16; // Adjusted to consider both first and last name
-    const isLongCompanyName = companyName.length > 32;
-    const isLongJobTitle = jobTitle.length > 68;
-    const badgeRef = useRef<HTMLDivElement | null>(null);
-
-    const handlePrint = () => {
-        if (!badgeRef.current) return;
-
-        if (isIOS) {
-            const badgeHTML = badgeRef.current.outerHTML;
-            const printWindow = window.open('', '_blank');
-            if (!printWindow) return;
-
-            const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-                .map((el) => el.outerHTML)
-                .join('\n');
-
-            printWindow.document.write(`
+        printWindow.document.write(`
       <html>
         <head>
           <title>Print Badge</title>
@@ -134,16 +97,67 @@ const Badge: React.FC<BadgeProps> = ({
         </body>
       </html>
     `);
-            printWindow.document.close();
-        } else {
-            // Desktop print using overlay
-            printBadge(badgeRef.current, '100%', '100%', 'auto');
+        printWindow.document.close();
+    } else {
+        // Desktop print using overlay
+        printBadge(badgeRef.current, '100%', '100%', 'auto');
+    }
+};
+
+const Badge: React.FC<BadgeProps> = ({
+    firstName,
+    lastName,
+    company,
+    designation,
+    image,
+    status,
+    statusBackground = '#000000',
+    statusTextColor = '#ffffff',
+    colors,
+    setBadgeData,
+    setShowQrCode,
+}) => {
+    const companyName = company || '';
+    const jobTitle = designation || '';
+
+    // Get status colors based on attendee status or use default
+    const getStatusColors = () => {
+        if (!colors || !status) return { background: statusBackground, text: statusTextColor };
+
+        const attendeeStatus = status.toLowerCase();
+        switch (attendeeStatus) {
+            case 'speaker':
+                return colors.statusColors.speaker;
+            case 'sponsor':
+                return colors.statusColors.sponsor;
+            case 'panelist':
+                return colors.statusColors.panelist;
+            case 'delegate':
+            default:
+                return colors.statusColors.delegate;
         }
     };
 
+    const statusColors = getStatusColors();
+
+    // Rough heuristic: if the name is very long (> 20 characters) it likely wraps to three lines on badge width
+    const isLongName = (firstName.length + lastName.length) > 16; // Adjusted to consider both first and last name
+    const isLongCompanyName = companyName.length > 32;
+    const isLongJobTitle = jobTitle.length > 68;
+    const badgeRef = useRef<HTMLDivElement | null>(null);
+
+    const handlePrint = () => {
+        handlePrintBadge(badgeRef);
+        setTimeout(() => {
+            setShowQrCode(true); // Show QR code after printing or canceling the print dialog
+            setBadgeData(undefined); // Clear badge data
+        }, 1000); // Delay ensures the print dialog finishes first
+    }
+
+
     return (
-        <div className='max-w-80 max-h-96 w-full my-10 mx-auto'>
-            
+        <div className='max-w-80 w-full max-h-[460px] my-10 mx-auto'>
+
             {/* Card For Printing... */}
             <div ref={badgeRef} className={cn('w-full mx-auto h-full flex flex-col gap-3 flex-1', !isIOS && '')}>
                 {/* Card 1 */}
@@ -198,7 +212,7 @@ const Badge: React.FC<BadgeProps> = ({
                         {status}
                     </div>
                 </div>
-                
+
                 {/* Card 2 (back side) */}
                 <div
                     className="w-full rotate-180 mx-auto overflow-hidden rounded hidden print:flex flex-col justify-between flex-1"
