@@ -1,53 +1,59 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Event } from '../../utils';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchEvents } from '../../store/slices/dashboardSlice';
+import { Event } from '../../types';
 import Card from '../../components/Card';
 
 const Dashboard: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { events, loading, error } = useAppSelector((state) => state.dashboard);
 
-  const apiBaseUrl = import.meta.env.VITE_BASE_URL;
-  const token: string | null = localStorage.getItem("token");
-
-  const today: Date = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const [events, setEvents] = useState<Event[] | null>(null);
-  // const [upcomingEvents, setUpcomingEvents] = useState<Event[] | null>(null);
-
-  const fetchTotalEvents = async (token: string | null) => {
-    try {
-      const response = await axios.post(`${apiBaseUrl}/api/eventslist`, {}, {
-        headers: {
-          // 'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
   useEffect(() => {
-    fetchTotalEvents(token).then(res => {
-      // console.log(res.data);
-      // setEvents(res.data);
-      const upcomingEvents = res.data.filter((event: Event) => {
-        const eventDate: Date = new Date(event.event_start_date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate >= today;
-      });
+    dispatch(fetchEvents());
+  }, [dispatch]);
 
-      setEvents(upcomingEvents);
-    })
-  }, []);
+  // Show loading state only on initial load
+  if (loading && !events) {
+    return (
+      <div className="p-5">
+        <h1 className='text-2xl font-semibold text-zinc-600'>All Upcoming Events</h1>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+        </div>
+      </div>
+    );
+  }
 
+  // Show error message if there's an error and no events to display
+  if (error) {
+    return (
+      <div className="p-5">
+        <h1 className='text-2xl font-semibold text-zinc-600'>All Upcoming Events</h1>
+        <div className="text-red-500 p-4 bg-red-50 rounded-md mt-4">
+          Error loading events: {error}
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state if there are no events
+  if (!events || events.length === 0) {
+    return (
+      <div className="p-5">
+        <h1 className='text-2xl font-semibold text-zinc-600'>All Upcoming Events</h1>
+        <div className="mt-5 text-gray-500 text-center py-10">
+          No upcoming events found.
+        </div>
+      </div>
+    );
+  }
+
+  // Show the list of events
   return (
     <div className='p-5'>
       <h1 className='text-2xl font-semibold text-zinc-600'>All Upcoming Events</h1>
-
       <div className='mt-5 w-full flex flex-wrap gap-5'>
-        {events?.map((event: Event) => (
-          // <Card eventItem={event}/>
+        {events.map((event: Event) => (
           <Card
             key={event.id}
             title={event.title}
@@ -68,7 +74,6 @@ const Dashboard: React.FC = () => {
           />
         ))}
       </div>
-      {(!events || events.length === 0) && <p>No upcoming events.</p>}
     </div>
   )
 }

@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import signinBanner from '/signinbanner.webp';
 import typingEffect from "../../utils";
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { loginUser, clearError } from '../../store/slices/authSlice';
 
 const Login: React.FC = () => {
-    const apiBaseUrl = import.meta.env.VITE_BASE_URL;
-
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { loading, error, token } = useAppSelector((state) => state.auth);
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errors,] = useState<{ email?: string; password?: string }>({});
-    const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
-    const [_, setSubmitted] = useState(false); // Track if form is submitted
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const [showPassword, setShowPassword] = useState(false);
 
     const textToType = "Step into the Future of Event Management with Klout Club - Your Event, Your Way!";
     const typingSpeed = 100;
@@ -24,46 +25,51 @@ const Login: React.FC = () => {
 
     const displayedText = typingEffect(textToType, typingSpeed, deletingSpeed, pauseDuration);
 
-    const onSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSubmitted(true); // Mark the form as submitted
-
-        try {
-            const response = await axios.post(`${apiBaseUrl}/api/login`, { email, password }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.data.status === 200) {
-                console.log(response.data);
-                localStorage.setItem("userId", response.data.user_id);
-                localStorage.setItem("token", response.data.access_token);
-                // Store response.data.user_id
-                // Swal.fire({
-                //     title: 'Login Successful!',
-                //     icon: 'success',
-                //     confirmButtonText: 'OK',
-                // }).then(() => navigate("/"));
-                navigate("/");
-            }
-
-            else {
-                Swal.fire({
-                    title: response.data.message,
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                });
-            }
-
-            // return response.data;
-        } catch (error) {
-            // console.log(error);
+    // Handle error messages
+    useEffect(() => {
+        if (error) {
             Swal.fire({
-                title: 'Something went wrong',
+                title: error,
                 icon: 'error',
                 confirmButtonText: 'OK',
             });
-            throw error;
+            // Clear error after showing it
+            dispatch(clearError());
+        }
+    }, [error, dispatch]);
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (token) {
+            navigate('/');
+        }
+    }, [token, navigate]);
+
+    const onSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        // Basic validation
+        const validationErrors: { email?: string; password?: string } = {};
+        if (!email) validationErrors.email = 'Email is required';
+        if (!password) validationErrors.password = 'Password is required';
+        
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+        
+        setErrors({});
+        
+        try {
+            const resultAction = await dispatch(loginUser({ email, password }));
+            
+            if (loginUser.fulfilled.match(resultAction)) {
+                // Login successful, the useEffect will handle the navigation
+                return;
+            }
+        } catch (error) {
+            // Error is already handled by the auth slice and useEffect
+            console.error('Login error:', error);
         }
     };
 
@@ -96,6 +102,7 @@ const Login: React.FC = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-black outline-none focus:border-klt_primary-500"
+                                disabled={loading}
                             />
                             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                         </div>
@@ -103,19 +110,23 @@ const Login: React.FC = () => {
                         {/* Password Field with Eye Icon */}
                         <div className="relative">
                             <label className="block text-sm font-medium text-gray-700">Password</label>
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-black outline-none focus:border-klt_primary-500"
-                            />
-                            {/* Eye Icon */}
-                            <span
-                                className="absolute inset-y-0 right-3 flex items-center top-6 cursor-pointer"
-                                onClick={() => setShowPassword(!showPassword)} // Toggle visibility
-                            >
-                                {showPassword ? <FaEyeSlash className="text-gray-500" /> : <FaEye className="text-gray-500" />}
-                            </span>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-black outline-none focus:border-klt_primary-500"
+                                    disabled={loading}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700"
+                                    disabled={loading}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
                             {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                         </div>
 

@@ -1,0 +1,87 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { Event } from '../../types';
+
+interface DashboardState {
+  events: Event[] | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: DashboardState = {
+  events: null,
+  loading: false,
+  error: null,
+};
+
+// Async thunk for fetching events
+export const fetchEvents = createAsyncThunk(
+  'dashboard/fetchEvents',
+  async (_, { rejectWithValue }) => {
+    try {
+      const apiBaseUrl = import.meta.env.VITE_BASE_URL;
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        return rejectWithValue('No authentication token found');
+      }
+
+      const response = await axios.post(
+        `${apiBaseUrl}/api/eventslist`,
+        {},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+      
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch events');
+    }
+  }
+);
+
+const dashboardSlice = createSlice({
+  name: 'dashboard',
+  initialState,
+  reducers: {
+    clearEvents: (state) => {
+      state.events = null;
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchEvents.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchEvents.fulfilled, (state, action) => {
+        state.loading = false;
+        
+        // Check if the response has a data property (common API pattern)
+        const responseData = Array.isArray(action.payload) ? action.payload : 
+                           (action.payload?.data || []);
+        
+        // Filter for upcoming events
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        state.events = responseData.filter((event: Event) => {
+          if (!event?.event_start_date) return false;
+          const eventDate = new Date(event.event_start_date);
+          eventDate.setHours(0, 0, 0, 0);
+          return eventDate >= today;
+        });
+      })
+      .addCase(fetchEvents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export const { clearEvents } = dashboardSlice.actions;
+export default dashboardSlice.reducer;
