@@ -67,14 +67,8 @@ export interface Event {
 }
 
 export interface User {
-    id: number;
-    email: string;
     name: string;
-    access_token: string;
-    access_token_type: string;
-    company_name: string;
-    message: string;
-    status: number;
     user_id: number;
     user_uuid: string;
+    company_name: string;
 }

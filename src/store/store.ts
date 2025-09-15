@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/authSlice';
+import authReducer, { rehydrate } from './slices/authSlice';
 import dashboardReducer from './slices/eventSlice';
 import printerReducer from './slices/printerSlice';
 
@@ -24,5 +24,8 @@ const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Dispatch rehydrate action to load auth state from localStorage
+store.dispatch(rehydrate());
 
 export default store;

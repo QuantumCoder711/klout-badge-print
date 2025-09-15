@@ -31,7 +31,7 @@ export const fetchPrinterCount = createAsyncThunk<
   async (eventUuid: string, { getState, rejectWithValue }) => {
     try {
       const state = getState();
-      const token = state.auth.user?.access_token;
+      const token = state.auth.token;
       
       if (!token) {
         return rejectWithValue('No authentication token found');

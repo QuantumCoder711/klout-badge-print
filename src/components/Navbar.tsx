@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Navbar: React.FC = () => {
 
   const handleLogout = (): void => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("klout-badge-print");
     window.location.reload();
   }
 

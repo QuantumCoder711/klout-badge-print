@@ -9,12 +9,32 @@ interface AuthState {
   error: string | null;
 }
 
-const initialState: AuthState = {
-  user: null,
-  token: localStorage.getItem('token') || null,
-  loading: false,
-  error: null,
+// Load initial state from localStorage if available
+const loadInitialState = (): AuthState => {
+  const savedAuth = localStorage.getItem('klout-badge-print');
+  if (savedAuth) {
+    try {
+      const { token, user } = JSON.parse(savedAuth);
+      return {
+        user,
+        token,
+        loading: false,
+        error: null,
+      };
+    } catch (e) {
+      console.error('Failed to parse saved auth state', e);
+    }
+  }
+  
+  return {
+    user: null,
+    token: null,
+    loading: false,
+    error: null,
+  };
 };
+
+const initialState: AuthState = loadInitialState();
 // Async thunk for login
 export const loginUser = createAsyncThunk(
   'auth/login',
@@ -35,18 +55,30 @@ export const loginUser = createAsyncThunk(
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (response.data.status === 200) {
-        const { access_token, user_id, ...userData } = response.data;
-        localStorage.setItem('token', access_token);
-        localStorage.setItem('userId', user_id.toString());
-        
+        const { access_token } = response.data;
+        const dataToSave = {
+          token: access_token,
+          user: {
+            name: response.data.name,
+            user_id: response.data.user_id,
+            user_uuid: response.data.user_uuid,
+            company_name: response.data.company_name
+          }
+        }
+
+        localStorage.setItem("klout-badge-print", JSON.stringify(dataToSave));
+
         return {
-          ...userData,
-          id: user_id,
-          email,
-          access_token
-        } as User;
+          token: access_token,
+          user: {
+            name: response.data.name,
+            user_id: response.data.user_id,
+            user_uuid: response.data.user_uuid,
+            company_name: response.data.company_name
+          }
+        };
       } else {
         return rejectWithValue(response.data.message || 'Login failed');
       }
@@ -61,8 +93,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
+      localStorage.removeItem('klout-badge-print');
       state.user = null;
       state.token = null;
       state.loading = false;
@@ -71,6 +102,19 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    // Add a rehydrate action to load initial state from localStorage
+    rehydrate: (state) => {
+      const savedAuth = localStorage.getItem('klout-badge-print');
+      if (savedAuth) {
+        try {
+          const { token, user } = JSON.parse(savedAuth);
+          state.token = token;
+          state.user = user;
+        } catch (e) {
+          console.error('Failed to parse saved auth state', e);
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -78,10 +122,10 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ token: string; user: { name: string; user_id: number; user_uuid: string; company_name: string; }; }>) => {
         state.loading = false;
-        state.user = action.payload;
-        state.token = action.payload.access_token;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -90,5 +134,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearError } = authSlice.actions;
+export const { logout, clearError, rehydrate } = authSlice.actions;
 export default authSlice.reducer;

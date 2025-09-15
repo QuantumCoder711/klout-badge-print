@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { Event } from '../../types';
 
-interface DashboardState {
+interface InitialState {
   events: Event[] | null;
   loading: boolean;
   error: string | null;
 }
 
-const initialState: DashboardState = {
+const initialState: InitialState = {
   events: null,
   loading: false,
   error: null,
@@ -17,12 +17,12 @@ const initialState: DashboardState = {
 // Async thunk for fetching events
 export const fetchEvents = createAsyncThunk(
   'dashboard/fetchEvents',
-  async (_, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     try {
       const apiBaseUrl = import.meta.env.VITE_BASE_URL;
-      const token = localStorage.getItem('token');
+      const { auth } = getState() as { auth: { token: string | null } };
       
-      if (!token) {
+      if (!auth.token) {
         return rejectWithValue('No authentication token found');
       }
 
@@ -31,7 +31,8 @@ export const fetchEvents = createAsyncThunk(
         {},
         {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${auth.token}`,
+            'Content-Type': 'application/json'
           }
         }
       );
